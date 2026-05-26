@@ -1,0 +1,276 @@
+/**
+ * Intercom Design System — Design Tokens
+ * Font substitute: Inter (Google Fonts) for Saans; JetBrains Mono for SaansMono
+ * Import this file first, then load fonts from CDN (see fonts/README.md)
+ *
+ * @google-fonts Inter:wght@400;500
+ * @google-fonts JetBrains+Mono:wght@400
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&display=swap');
+
+/* ─────────────────────────────────────────────
+   BASE FONT DECLARATIONS
+   (Replace with @font-face for real Saans files)
+───────────────────────────────────────────── */
+
+:root {
+  /* ─── FONT FAMILIES ─── */
+  --font-sans:   'Inter', 'Saans Fallback', ui-sans-serif, system-ui, sans-serif;
+  --font-mono:   'JetBrains Mono', 'SaansMono Fallback', ui-monospace, monospace;
+
+  /* ─────────────────────────────────────────────
+     COLORS — Brand & Accent
+  ───────────────────────────────────────────── */
+  --color-ink:           #111111;   /* Charcoal — system primary */
+  --color-on-primary:    #ffffff;   /* White — text on charcoal CTAs */
+  --color-fin-orange:    #ff5600;   /* Fin AI accent — reserved for Fin CTA/badge only */
+  --color-report-orange: #ff7a2e;   /* Report palette orange (in-product analytics only) */
+  --color-brand-blue:    #0007cb;   /* Saturated marketing-illustration blue */
+
+  /* ─────────────────────────────────────────────
+     COLORS — Surfaces
+  ───────────────────────────────────────────── */
+  --color-canvas:          #f5f1ec; /* Default page background — warm cream */
+  --color-surface-1:       #ffffff; /* Floating cards, pricing tiles */
+  --color-surface-2:       #ede9e3; /* Slightly darker cream — startup banner, alt rows */
+  --color-hairline:        #d3cec6; /* 1px card borders */
+  --color-hairline-soft:   #e8e4df; /* Dividers — FAQ rows, footer columns */
+  --color-inverse-canvas:  #000000; /* Quote / testimonial strip */
+  --color-inverse-surface: #1a1a1a; /* Hover in dark contexts */
+
+  /* ─────────────────────────────────────────────
+     COLORS — Text
+  ───────────────────────────────────────────── */
+  --color-ink-muted:         #626260; /* Secondary — meta info, deselected tabs */
+  --color-ink-subtle:        #7b7b78; /* Tertiary — footer, helper text */
+  --color-ink-tertiary:      #9c9fa5; /* Quaternary — disabled, footnotes */
+  --color-inverse-ink:       #ffffff; /* White on black quote strip */
+  --color-inverse-ink-muted: #a8a8a6; /* Light gray on black meta */
+
+  /* ─────────────────────────────────────────────
+     COLORS — Semantic
+  ───────────────────────────────────────────── */
+  --color-semantic-error:   #e0341e; /* Form validation, destructive */
+  --color-semantic-success: #1a8a3c; /* Positive states */
+
+  /* ─────────────────────────────────────────────
+     COLORS — Report Palette (in-product only)
+  ───────────────────────────────────────────── */
+  --color-report-blue:  #2254f4;
+  --color-report-green: #1a8a3c;
+  --color-report-pink:  #e8488a;
+  --color-report-lime:  #82c91e;
+  --color-report-cyan:  #12b5c8;
+
+  /* ─────────────────────────────────────────────
+     TYPOGRAPHY — Size Scale
+  ───────────────────────────────────────────── */
+  --font-size-display-xl: 72px;
+  --font-size-display-lg: 56px;
+  --font-size-display-md: 40px;
+  --font-size-headline:   28px;
+  --font-size-card-title: 22px;
+  --font-size-subhead:    20px;
+  --font-size-body-lg:    18px;
+  --font-size-body:       16px;
+  --font-size-body-sm:    14px;
+  --font-size-caption:    12px;
+  --font-size-button:     15px;
+  --font-size-eyebrow:    14px;
+  --font-size-mono:       13px;
+
+  /* ─────────────────────────────────────────────
+     TYPOGRAPHY — Weight
+  ───────────────────────────────────────────── */
+  --font-weight-regular: 400;
+  --font-weight-medium:  500;
+
+  /* ─────────────────────────────────────────────
+     TYPOGRAPHY — Line Heights
+  ───────────────────────────────────────────── */
+  --line-height-display-xl: 1.05;
+  --line-height-display-lg: 1.10;
+  --line-height-display-md: 1.15;
+  --line-height-headline:   1.20;
+  --line-height-card-title: 1.25;
+  --line-height-subhead:    1.40;
+  --line-height-body-lg:    1.50;
+  --line-height-body:       1.50;
+  --line-height-body-sm:    1.50;
+  --line-height-caption:    1.40;
+  --line-height-button:     1.20;
+  --line-height-eyebrow:    1.30;
+  --line-height-mono:       1.50;
+
+  /* ─────────────────────────────────────────────
+     TYPOGRAPHY — Letter Spacing
+  ───────────────────────────────────────────── */
+  --letter-spacing-display-xl: -2.0px;
+  --letter-spacing-display-lg: -1.4px;
+  --letter-spacing-display-md: -0.8px;
+  --letter-spacing-headline:   -0.5px;
+  --letter-spacing-card-title: -0.3px;
+  --letter-spacing-subhead:    -0.2px;
+  --letter-spacing-body-lg:    -0.1px;
+  --letter-spacing-body:        0px;
+  --letter-spacing-body-sm:     0px;
+  --letter-spacing-caption:     0px;
+  --letter-spacing-button:      0px;
+  --letter-spacing-eyebrow:     0px;
+  --letter-spacing-mono:        0px;
+
+  /* ─────────────────────────────────────────────
+     SPACING — Base 8px system
+  ───────────────────────────────────────────── */
+  --spacing-xxs:     4px;
+  --spacing-xs:      8px;
+  --spacing-sm:     12px;
+  --spacing-md:     16px;
+  --spacing-lg:     24px;
+  --spacing-xl:     32px;
+  --spacing-xxl:    48px;
+  --spacing-section: 96px;
+
+  /* Card interior padding */
+  --padding-card:          24px; /* pricing/feature cards */
+  --padding-card-lg:       32px; /* testimonial/discount cards */
+  --padding-card-xl:       48px; /* CTA banners */
+  --padding-button-v:      10px;
+  --padding-button-h:      18px;
+  --padding-input-v:       10px;
+  --padding-input-h:       14px;
+
+  /* ─────────────────────────────────────────────
+     BORDER RADIUS
+  ───────────────────────────────────────────── */
+  --rounded-xs:   4px;   /* chips, badges */
+  --rounded-sm:   6px;   /* inline tags */
+  --rounded-md:   8px;   /* buttons, inputs */
+  --rounded-lg:  12px;   /* pricing/feature cards */
+  --rounded-xl:  16px;   /* product mockup cards */
+  --rounded-xxl: 24px;   /* CTA banners */
+  --rounded-pill: 9999px; /* tab toggles */
+  --rounded-full: 9999px; /* avatars */
+
+  /* ─────────────────────────────────────────────
+     LAYOUT
+  ───────────────────────────────────────────── */
+  --max-width:     1280px;
+  --nav-height:    56px;
+}
+
+/* ─────────────────────────────────────────────
+   SEMANTIC ELEMENT DEFAULTS
+   Apply to the document root for consistent baseline
+───────────────────────────────────────────── */
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body);
+  letter-spacing: var(--letter-spacing-body);
+  color: var(--color-ink);
+  background-color: var(--color-canvas);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* ─────────────────────────────────────────────
+   TYPOGRAPHY UTILITY CLASSES
+───────────────────────────────────────────── */
+
+.display-xl {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-display-xl);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-display-xl);
+  letter-spacing: var(--letter-spacing-display-xl);
+}
+.display-lg {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-display-lg);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-display-lg);
+  letter-spacing: var(--letter-spacing-display-lg);
+}
+.display-md {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-display-md);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-display-md);
+  letter-spacing: var(--letter-spacing-display-md);
+}
+.headline {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-headline);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-headline);
+  letter-spacing: var(--letter-spacing-headline);
+}
+.card-title {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-card-title);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-card-title);
+  letter-spacing: var(--letter-spacing-card-title);
+}
+.subhead {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-subhead);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-subhead);
+  letter-spacing: var(--letter-spacing-subhead);
+}
+.body-lg {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-body-lg);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body-lg);
+  letter-spacing: var(--letter-spacing-body-lg);
+}
+.body {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body);
+  letter-spacing: var(--letter-spacing-body);
+}
+.body-sm {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body-sm);
+  letter-spacing: var(--letter-spacing-body-sm);
+}
+.caption {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-caption);
+  letter-spacing: var(--letter-spacing-caption);
+}
+.button-label {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-button);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-button);
+  letter-spacing: var(--letter-spacing-button);
+}
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-eyebrow);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-eyebrow);
+  letter-spacing: var(--letter-spacing-eyebrow);
+  color: var(--color-ink-muted);
+}
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-mono);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-mono);
+  letter-spacing: var(--letter-spacing-mono);
+}

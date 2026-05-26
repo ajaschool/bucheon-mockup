@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2026 부천문화콘텐츠 성장지원플랫폼</title>
+  <link rel="stylesheet" href="colors_and_type.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body, #root { height: 100%; }
+    body { font-family: var(--font-sans); background: var(--color-canvas); color: var(--color-ink); -webkit-font-smoothing: antialiased; }
+    input, button, select, textarea { font-family: var(--font-sans); }
+    button { cursor: pointer; }
+    input:focus, select:focus { outline: 2px solid var(--color-ink); outline-offset: 1px; }
+
+    /* Calendar today cell: white text */
+    .cal-today-num { color: #fff !important; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--color-hairline); border-radius: 3px; }
+
+    /* Hover effects */
+    .nav-btn:hover { background: var(--color-surface-2) !important; }
+    .btn-primary:hover { background: #2a2a2a !important; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- Data layer -->
+  <script src="data.js"></script>
+
+  <!-- React + Babel -->
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <!-- Component scripts -->
+  <script type="text/babel" src="Auth.jsx"></script>
+  <script type="text/babel" src="AdminApp.jsx"></script>
+  <script type="text/babel" src="MentorApp.jsx"></script>
+
+  <!-- Main App -->
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const SESSION_KEY = 'bucheon_session';
+
+    const App = () => {
+      const [currentUser, setCurrentUser] = useState(() => {
+        try { return JSON.parse(sessionStorage.getItem(SESSION_KEY)); } catch { return null; }
+      });
+      const [authView, setAuthView] = useState('login'); // 'login' | 'signup'
+
+      const handleLogin = (user) => {
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify(user));
+        setCurrentUser(user);
+      };
+
+      const handleLogout = () => {
+        sessionStorage.removeItem(SESSION_KEY);
+        setCurrentUser(null);
+        setAuthView('login');
+      };
+
+      // Refresh user from DB in case approval status changed
+      const freshUser = currentUser
+        ? window.DB.get().users.find(u => u.id === currentUser.id) || currentUser
+        : null;
+
+      if (!freshUser) {
+        return authView === 'signup'
+          ? <SignupPage onBack={() => setAuthView('login')} />
+          : <LoginPage onLogin={handleLogin} onSignup={() => setAuthView('signup')} />;
+      }
+
+      if (freshUser.role === 'admin') {
+        return <AdminApp user={freshUser} onLogout={handleLogout} />;
+      }
+
+      if (!freshUser.approved) {
+        return <PendingPage user={freshUser} onLogout={handleLogout} />;
+      }
+
+      return <MentorApp user={freshUser} onLogout={handleLogout} />;
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
