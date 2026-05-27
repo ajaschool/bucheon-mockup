@@ -136,7 +136,6 @@ const AdminApp = ({ user, onLogout }) => {
         </div>
         <div style={adS.sideBottom}>
           <div style={adS.sideUser}>
-            <div style={adS.avatar}>{user.name[0]}</div>
             <div><div style={adS.userName}>{user.name}</div><div style={adS.userSub}>{user.company}</div></div>
           </div>
           <button onClick={onLogout} style={adS.logoutBtn}>로그아웃</button>
@@ -238,7 +237,6 @@ const AdminDashboard = ({ db, refresh, onTab, onMentorClick }) => {
               <div key={m.id} style={{ ...adS.progressItem, cursor: 'pointer' }}
                 onClick={() => onMentorClick(m.id)}>
                 <div style={adS.progressLeft}>
-                  <div style={adS.progressAvatar}>{m.name[0]}</div>
                   <div>
                     <div style={adS.progressName}>{m.name}</div>
                     <div style={adS.progressMeta}>{m.company} · 멘티 {menteeCount}개</div>
@@ -286,7 +284,6 @@ const MentorDetailPage = ({ mentor, db, onBack }) => {
 
       <div style={adS.detailHero}>
         <div style={adS.detailHeroLeft}>
-          <div style={adS.detailHeroAvatar}>{mentor.name[0]}</div>
           <div>
             <h2 style={adS.pageTitle}>{mentor.name} <span style={adS.detailHeroPos}>{mentor.position}</span></h2>
             <div style={adS.detailHeroMeta}>{mentor.company} · {mentor.phone}</div>
@@ -405,7 +402,6 @@ const MentorManagement = ({ db, refresh }) => {
             <div key={m.id} style={adS.mentorCard}>
               <div style={adS.mentorHeader} onClick={() => m.approved && setExpanded(isOpen ? null : m.id)}>
                 <div style={adS.mentorLeft}>
-                  <div style={adS.progressAvatar}>{m.name[0]}</div>
                   <div>
                     <div style={adS.mentorName}>{m.name} <span style={adS.mentorPos}>{m.position}</span></div>
                     <div style={adS.mentorMeta}>{m.company} · {m.phone}</div>
@@ -510,8 +506,7 @@ const ReportsView = ({ db, onReportClick }) => {
         return (
           <div key={mentor.id} style={adS.reportMentorSection}>
             <div style={adS.reportMentorHeader}>
-              <div style={adS.progressAvatar}>{mentor.name[0]}</div>
-              <div style={{ flex: 1 }}>
+                            <div style={{ flex: 1 }}>
                 <span style={adS.reportMentorName}>{mentor.name}</span>
                 <span style={adS.reportMentorCompany}> — {mentor.company}</span>
               </div>
