@@ -1,5 +1,7 @@
 /* ── Auth.jsx — Login / Signup / Pending screens ── */
 
+const Icon = window.Icon;
+
 const LoginPage = ({ onLogin, onSignup }) => {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -72,7 +74,7 @@ const SignupPage = ({ onBack }) => {
   if (done) return (
     <div style={authS.page}>
       <div style={{ ...authS.card, textAlign: 'center' }}>
-        <div style={authS.successCircle}>✓</div>
+        <div style={authS.successCircle}><Icon name="check" size={28} color="#fff" strokeWidth={2.5} /></div>
         <h1 style={{ ...authS.title, textAlign: 'center' }}>신청 완료</h1>
         <p style={{ ...authS.sub, textAlign: 'center' }}>
           멘토 등록 신청이 접수되었습니다.<br />관리자 승인 후 로그인하실 수 있습니다.
@@ -85,7 +87,9 @@ const SignupPage = ({ onBack }) => {
   return (
     <div style={authS.page}>
       <div style={{ ...authS.card, maxWidth: '500px' }}>
-        <button onClick={onBack} style={authS.backBtn}>← 뒤로</button>
+        <button onClick={onBack} style={authS.backBtn}>
+          <Icon name="arrow-left" size={14} style={{ marginRight: '4px' }} />뒤로
+        </button>
         <h1 style={authS.title}>멘토 회원가입</h1>
         <p style={authS.sub}>아래 정보를 입력해 멘토 등록을 신청하세요</p>
         <form onSubmit={handleSubmit} style={authS.form}>
@@ -134,7 +138,7 @@ const SignupPage = ({ onBack }) => {
 const PendingPage = ({ user, onLogout }) => (
   <div style={authS.page}>
     <div style={{ ...authS.card, textAlign: 'center' }}>
-      <div style={authS.pendingIcon}>⏳</div>
+      <div style={authS.pendingIcon}><Icon name="clock" size={44} color="var(--color-status-warn)" strokeWidth={1.6} /></div>
       <h1 style={{ ...authS.title, textAlign: 'center' }}>승인 대기 중</h1>
       <p style={{ ...authS.sub, textAlign: 'center' }}>
         <strong>{user.company}</strong>의 <strong>{user.name}</strong>님,<br />
@@ -170,8 +174,8 @@ const authS = {
   hint: { marginTop: '24px', padding: '14px 16px', background: 'var(--color-canvas)', borderRadius: '8px' },
   hintTitle: { fontSize: '11px', fontWeight: '500', color: 'var(--color-ink-subtle)', margin: '0 0 6px', textTransform: 'uppercase', letterSpacing: '0.5px' },
   hintRow: { fontSize: '12px', color: 'var(--color-ink-muted)', margin: '3px 0' },
-  successCircle: { width: '56px', height: '56px', background: 'var(--color-semantic-success)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', color: '#fff', margin: '0 auto 24px' },
-  pendingIcon: { fontSize: '44px', marginBottom: '20px' },
+  successCircle: { width: '56px', height: '56px', background: 'var(--color-status-done)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' },
+  pendingIcon: { marginBottom: '20px', display: 'flex', justifyContent: 'center' },
 };
 
 Object.assign(window, { LoginPage, SignupPage, PendingPage });

@@ -1,9 +1,11 @@
 /* ── MentorApp.jsx v4 — Hero + dense grid, no empty space ── */
 
+const Icon = window.Icon;
 const stockPhoto = window.stockPhoto;
 const Lightbox = window.Lightbox;
 const DownloadModal = window.DownloadModal;
 const PhotoTile = window.PhotoTile;
+const ConfirmModal = window.ConfirmModal;
 
 const useTheme = window.useTheme || function () {
   const [theme, setTheme] = React.useState(() => window.__theme || 'default');
@@ -44,9 +46,9 @@ const MentoringCalendar = ({ schedules, year, month, onPrev, onNext, onDayClick,
   return (
     <div style={mtS.calWrap}>
       <div style={mtS.calHeader}>
-        <button onClick={onPrev} style={mtS.calNavBtn}>‹</button>
+        <button onClick={onPrev} style={mtS.calNavBtn} aria-label="이전 달"><Icon name="chevron-left" size={18} color="var(--color-ink-muted)" /></button>
         <span style={mtS.calTitle}>{year}년 {month + 1}월</span>
-        <button onClick={onNext} style={mtS.calNavBtn}>›</button>
+        <button onClick={onNext} style={mtS.calNavBtn} aria-label="다음 달"><Icon name="chevron-right" size={18} color="var(--color-ink-muted)" /></button>
       </div>
       <div style={mtS.calGrid}>
         {DAYS.map(d => <div key={d} style={mtS.calDayLabel}>{d}</div>)}
@@ -68,7 +70,7 @@ const MentoringCalendar = ({ schedules, year, month, onPrev, onNext, onDayClick,
                 ...(!d ? { opacity: 0, pointerEvents: 'none' } : {}),
                 ...(hasSched ? { cursor: 'pointer' } : {}),
               }}>
-              {d && <span style={{ ...mtS.calNum, ...(isT ? { color: '#fff' } : {}), ...(isSelected ? { color: 'var(--color-ink)', fontWeight: '600' } : {}) }}>{d}</span>}
+              {d && <span style={{ ...mtS.calNum, ...(isT ? { color: 'var(--color-ink)', fontWeight: '700' } : {}), ...(isSelected ? { color: 'var(--color-ink)', fontWeight: '600' } : {}) }}>{d}</span>}
               <div style={mtS.calDots}>
                 {hasPending && <span style={{ ...mtS.calDot, background: 'var(--color-report-blue)' }}></span>}
                 {hasDone && <span style={{ ...mtS.calDot, background: 'var(--color-semantic-success)' }}></span>}
@@ -80,7 +82,7 @@ const MentoringCalendar = ({ schedules, year, month, onPrev, onNext, onDayClick,
       <div style={mtS.calLegend}>
         <span style={mtS.legendItem}><span style={{ ...mtS.legendDot, background: 'var(--color-report-blue)' }}></span>예정</span>
         <span style={mtS.legendItem}><span style={{ ...mtS.legendDot, background: 'var(--color-semantic-success)' }}></span>완료</span>
-        <span style={mtS.legendHint}>점 있는 날 클릭 → 우측 카드 하이라이트</span>
+        <span style={mtS.legendHint}>점이 있는 날을 클릭하면 우측 카드가 하이라이트됩니다</span>
       </div>
     </div>
   );
@@ -108,7 +110,9 @@ const SessionPage = ({ session, mentee, onBack, refresh }) => {
 
   return (
     <div style={mtS.pageWrap}>
-      <button onClick={onBack} style={mtS.backBtn}>← 돌아가기</button>
+      <button onClick={onBack} style={mtS.backBtn}>
+        <Icon name="arrow-left" size={14} style={{ marginRight: '6px' }} />돌아가기
+      </button>
 
       <div style={mtS.sessionPageHeader}>
         <div>
@@ -116,7 +120,10 @@ const SessionPage = ({ session, mentee, onBack, refresh }) => {
           <h2 style={mtS.sessionPageTitle}>{session.date.replace(/-/g, '. ')} 멘토링</h2>
           {mentee?.contactName && <div style={mtS.sessionPageMeta}>담당: {mentee.contactName} · {mentee.contactPhone}</div>}
         </div>
-        <span style={mtS.statusBadge(isCompleted)}>{isCompleted ? '✓ 완료됨' : '진행 예정'}</span>
+        <span style={mtS.statusBadge(isCompleted)}>
+          {isCompleted && <Icon name="check" size={13} color="var(--color-status-done)" strokeWidth={2.5} style={{ marginRight: '4px' }} />}
+          {isCompleted ? '완료됨' : '진행 예정'}
+        </span>
       </div>
 
       {isCompleted ? (
@@ -124,9 +131,11 @@ const SessionPage = ({ session, mentee, onBack, refresh }) => {
           <div style={mtS.section}>
             <h3 style={mtS.sectionTitle}>제출 보고서</h3>
             <button style={mtS.fileChipLg} onClick={() => setDownloadFile(session.reportFilename)}>
-              <span style={{ fontSize: '18px' }}>📄</span>
+              <Icon name="file-text" size={18} color="var(--color-ink)" />
               <span>{session.reportFilename}</span>
-              <span style={mtS.fileChipHint}>다운로드</span>
+              <span style={mtS.fileChipHint}>
+                <Icon name="download" size={14} color="var(--color-ink-muted)" style={{ marginRight: '4px' }} />다운로드
+              </span>
             </button>
           </div>
           <div style={mtS.section}>
@@ -146,14 +155,20 @@ const SessionPage = ({ session, mentee, onBack, refresh }) => {
               <div style={mtS.uploadLabel}>보고서 양식</div>
               <div style={mtS.uploadSub}>작성 후 아래에 첨부해 주세요</div>
             </div>
-            <button style={mtS.downloadBtn} onClick={() => setDownloadFile('멘토링보고서_양식.docx')}>📥 양식 다운로드</button>
+            <button style={mtS.downloadBtn} onClick={() => setDownloadFile('멘토링보고서_양식.docx')}>
+              <Icon name="download" size={14} color="var(--color-ink)" style={{ marginRight: '6px' }} />양식 다운로드
+            </button>
           </div>
 
           <div style={mtS.section}>
             <div style={mtS.uploadLabel}>보고서 첨부 <span style={{ color: 'var(--color-semantic-error)' }}>*</span></div>
             <label style={mtS.fileLabel}>
               <input type="file" accept=".pdf,.doc,.docx" onChange={e => setReportFile(e.target.files[0])} style={{ display: 'none' }} />
-              <div style={mtS.fileBtn}>{reportFile ? <span style={{ color: 'var(--color-ink)' }}>📄 {reportFile.name}</span> : <span style={{ color: 'var(--color-ink-subtle)' }}>파일 선택 (PDF, Word)</span>}</div>
+              <div style={mtS.fileBtn}>
+                {reportFile
+                  ? <span style={{ color: 'var(--color-ink)', display: 'inline-flex', alignItems: 'center', gap: '6px' }}><Icon name="file-text" size={14} />{reportFile.name}</span>
+                  : <span style={{ color: 'var(--color-ink-subtle)' }}>파일 선택 (PDF, Word)</span>}
+              </div>
             </label>
           </div>
 
@@ -161,7 +176,11 @@ const SessionPage = ({ session, mentee, onBack, refresh }) => {
             <div style={mtS.uploadLabel}>현장 사진 <span style={{ color: 'var(--color-semantic-error)' }}>*</span> <span style={mtS.uploadSub}>최소 1장 · 최대 4장</span></div>
             <label style={mtS.fileLabel}>
               <input type="file" accept="image/*" multiple onChange={e => setPhotos(Array.from(e.target.files).slice(0, 4))} style={{ display: 'none' }} />
-              <div style={mtS.fileBtn}>{photos.length > 0 ? <span style={{ color: 'var(--color-ink)' }}>📸 {photos.length}장 선택됨</span> : <span style={{ color: 'var(--color-ink-subtle)' }}>사진 선택 (최대 4장)</span>}</div>
+              <div style={mtS.fileBtn}>
+                {photos.length > 0
+                  ? <span style={{ color: 'var(--color-ink)', display: 'inline-flex', alignItems: 'center', gap: '6px' }}><Icon name="camera" size={14} />{photos.length}장 선택됨</span>
+                  : <span style={{ color: 'var(--color-ink-subtle)' }}>사진 선택 (최대 4장)</span>}
+              </div>
             </label>
           </div>
 
@@ -180,6 +199,7 @@ const SessionPage = ({ session, mentee, onBack, refresh }) => {
 const MenteeTab = ({ db, user, onSessionClick, refresh }) => {
   const [addingFor, setAddingFor] = React.useState(null);
   const [newDate, setNewDate] = React.useState('');
+  const [deletingSched, setDeletingSched] = React.useState(null); // {id, date, menteeName}
   const mentees = db.mentees.filter(m => m.mentorId === user.id);
 
   if (mentees.length === 0) return <div style={mtS.emptyState}>배정된 멘티가 없습니다.<br />관리자에게 문의하세요.</div>;
@@ -233,7 +253,8 @@ const MenteeTab = ({ db, user, onSessionClick, refresh }) => {
                         </button>
                         {s.status === 'pending' && (
                           <button style={mtS.schedDelBtn} onClick={() => {
-                            if (window.confirm('이 스케쥴을 삭제하시겠습니까?')) { window.DB.deleteSchedule(s.id); refresh(); }
+                            const mt = mentees.find(x => x.id === s.menteeId);
+                            setDeletingSched({ id: s.id, date: s.date, menteeName: mt?.name || '' });
                           }}>삭제</button>
                         )}
                       </div>
@@ -245,6 +266,17 @@ const MenteeTab = ({ db, user, onSessionClick, refresh }) => {
           </div>
         );
       })}
+
+      {deletingSched && (
+        <ConfirmModal
+          title="일정 삭제"
+          message={<><strong>{deletingSched.menteeName}</strong> · {deletingSched.date.replace(/-/g, '. ')} 일정을 삭제합니다.<br />되돌릴 수 없습니다.</>}
+          confirmText="삭제"
+          destructive
+          onConfirm={() => { window.DB.deleteSchedule(deletingSched.id); refresh(); }}
+          onClose={() => setDeletingSched(null)}
+        />
+      )}
     </div>
   );
 };
@@ -292,7 +324,7 @@ const NextUpCard = ({ session, mentee, onClick }) => {
   if (!session) return null;
   const diffDays = Math.ceil((new Date(session.date) - new Date()) / 86400000);
   const dDayText = diffDays < 0 ? `${Math.abs(diffDays)}일 지남` : diffDays === 0 ? '오늘' : `D-${diffDays}`;
-  const accent = diffDays < 0 ? 'var(--color-semantic-error)' : diffDays === 0 ? 'var(--color-fin-orange)' : 'var(--color-report-blue)';
+  const accent = diffDays < 0 ? 'var(--color-semantic-error)' : diffDays === 0 ? 'var(--color-accent)' : 'var(--color-ink)';
   return (
     <div style={mtS.nextUpCard} onClick={onClick}>
       <div style={mtS.nextUpLeft}>
@@ -303,7 +335,9 @@ const NextUpCard = ({ session, mentee, onClick }) => {
       </div>
       <div style={mtS.nextUpRight}>
         <div style={{ ...mtS.nextUpDday, color: accent }}>{dDayText}</div>
-        <button style={mtS.nextUpBtn} onClick={(e) => { e.stopPropagation(); onClick(); }}>보고서 업로드 →</button>
+        <button style={mtS.nextUpBtn} onClick={(e) => { e.stopPropagation(); onClick(); }}>
+          보고서 업로드<Icon name="arrow-right" size={14} color="#fff" style={{ marginLeft: '6px' }} />
+        </button>
       </div>
     </div>
   );
@@ -472,7 +506,9 @@ const MentorApp = ({ user, onLogout }) => {
                       const diffDays = Math.ceil((new Date(s.date) - new Date()) / 86400000);
                       const isHi = s.date === selectedDate;
                       return (
-                        <div key={s.id} style={{ ...mtS.gridCard, ...(isHi ? mtS.gridCardHi : {}) }} onClick={() => openSession(s)}>
+                        <div key={s.id}
+                          style={{ ...mtS.gridCard, borderLeft: `3px solid ${diffDays < 0 ? 'var(--color-semantic-error)' : diffDays === 0 ? 'var(--color-accent)' : 'var(--color-status-progress)'}`, ...(isHi ? mtS.gridCardHi : {}) }}
+                          onClick={() => openSession(s)}>
                           <div style={mtS.gridCardTop}>
                             <span style={mtS.gridCardDate}>{s.date.replace(/-/g, '. ')}</span>
                             <span style={mtS.dday(diffDays)}>
@@ -497,7 +533,7 @@ const MentorApp = ({ user, onLogout }) => {
                       const isHi = s.date === selectedDate;
                       return (
                         <div key={s.id}
-                          style={{ ...mtS.gridCard, borderLeft: '4px solid var(--color-semantic-success)', ...(isHi ? mtS.gridCardHi : {}) }}
+                          style={{ ...mtS.gridCard, borderLeft: '3px solid var(--color-status-done)', ...(isHi ? mtS.gridCardHi : {}) }}
                           onClick={() => openSession(s)}>
                           <div style={mtS.gridCardTop}>
                             <span style={mtS.gridCardDate}>{s.date.replace(/-/g, '. ')}</span>
@@ -505,7 +541,13 @@ const MentorApp = ({ user, onLogout }) => {
                           </div>
                           <div style={mtS.gridCardMentee}>{mt?.name}</div>
                           {mt?.contactName && <div style={mtS.gridCardContact}>담당 {mt.contactName} · {mt.contactPhone}</div>}
-                          <div style={mtS.gridCardFile}>📄 {s.reportFilename} · 📸 {s.photos.length}장</div>
+                          <div style={mtS.gridCardFile}>
+                            <Icon name="file-text" size={13} color="var(--color-ink-muted)" />
+                            <span>{s.reportFilename}</span>
+                            <span style={{ color: 'var(--color-ink-tertiary)' }}>·</span>
+                            <Icon name="camera" size={13} color="var(--color-ink-muted)" />
+                            <span>사진 {s.photos.length}장</span>
+                          </div>
                         </div>
                       );
                     })}
@@ -575,7 +617,8 @@ const mtS = {
   calGrid: { display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px' },
   calDayLabel: { textAlign: 'center', fontSize: '12px', color: 'var(--color-ink-subtle)', padding: '6px 0', fontWeight: '500' },
   calCell: { display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '6px 2px', borderRadius: '8px', minHeight: '46px', justifyContent: 'center', transition: 'background 0.1s' },
-  calCellToday: { background: 'var(--color-ink)', borderRadius: '8px' },
+  /* 오늘 셀: 검정 채움 → 외곽선만 (점 가시성 보존) */
+  calCellToday: { boxShadow: 'inset 0 0 0 1.5px var(--color-ink)', borderRadius: '8px' },
   calCellSelected: { background: 'var(--color-surface-2)', borderRadius: '8px', boxShadow: 'inset 0 0 0 2px var(--color-ink)' },
   calNum: { fontSize: '14px', color: 'var(--color-ink)', lineHeight: 1 },
   calDots: { display: 'flex', gap: '3px', marginTop: '5px', minHeight: '7px' },
@@ -616,8 +659,14 @@ const mtS = {
   gridCardContact: { fontSize: '12px', color: 'var(--color-ink-subtle)' },
   gridCardFile: { fontSize: '12px', color: 'var(--color-ink-subtle)', marginTop: '8px', paddingTop: '10px', borderTop: '1px solid var(--color-hairline-soft)' },
   gridCardBtn: { marginTop: '12px', padding: '9px 14px', background: 'var(--t-button-bg)', color: 'var(--t-button-text)', border: 'none', borderRadius: 'var(--t-radius-button)', fontSize: '13px', fontWeight: '600', cursor: 'pointer', fontFamily: 'var(--font-sans)' },
-  dday: diffDays => ({ fontSize: '13px', fontWeight: '600', color: diffDays < 0 ? 'var(--color-ink-subtle)' : diffDays === 0 ? 'var(--color-fin-orange)' : 'var(--color-report-blue)', background: diffDays < 0 ? 'var(--color-surface-2)' : diffDays === 0 ? '#fff5eb' : '#eff6ff', padding: '3px 10px', borderRadius: '999px' }),
-  schedStatusBadge: status => ({ fontSize: '11px', fontWeight: '500', padding: '3px 10px', borderRadius: '999px', background: status === 'completed' ? '#dcfce7' : '#dbeafe', color: status === 'completed' ? 'var(--color-semantic-success)' : 'var(--color-report-blue)', whiteSpace: 'nowrap' }),
+  dday: diffDays => ({
+    fontSize: '12px', fontWeight: '600',
+    color: diffDays < 0 ? 'var(--color-ink-subtle)' : diffDays === 0 ? 'var(--color-accent)' : 'var(--color-ink)',
+    background: diffDays < 0 ? 'var(--color-surface-2)' : diffDays === 0 ? 'var(--color-accent-soft)' : 'var(--color-surface-2)',
+    padding: '3px 10px', borderRadius: '999px',
+    fontVariantNumeric: 'tabular-nums',
+  }),
+  schedStatusBadge: status => ({ fontSize: '11px', fontWeight: '500', padding: '3px 10px', borderRadius: '999px', background: status === 'completed' ? 'var(--color-status-done-bg)' : 'var(--color-status-progress-bg)', color: status === 'completed' ? 'var(--color-semantic-success)' : 'var(--color-report-blue)', whiteSpace: 'nowrap' }),
 
   /* Mentee tab */
   menteeCard: { background: 'var(--color-canvas)', border: '1px solid var(--color-hairline-soft)', borderRadius: '12px', overflow: 'hidden' },
@@ -627,7 +676,7 @@ const mtS = {
   menteeCardRight: { display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0, marginLeft: '14px' },
   menteeProg: { fontSize: '13px', color: 'var(--color-ink-subtle)', whiteSpace: 'nowrap' },
   addSchedBtn: { fontSize: '13px', padding: '7px 14px', background: 'transparent', border: '1px solid var(--color-hairline)', borderRadius: '8px', cursor: 'pointer', fontFamily: 'var(--font-sans)', color: 'var(--color-ink)', whiteSpace: 'nowrap' },
-  addDateRow: { display: 'flex', gap: '10px', padding: '14px 22px', background: '#eff6ff', borderBottom: '1px solid var(--color-hairline-soft)' },
+  addDateRow: { display: 'flex', gap: '10px', padding: '14px 22px', background: 'var(--color-status-progress-bg)', borderBottom: '1px solid var(--color-hairline-soft)' },
   dateInput: { flex: 1, padding: '9px 12px', border: '1px solid var(--color-hairline)', borderRadius: '8px', fontSize: '14px', fontFamily: 'var(--font-sans)', outline: 'none' },
   addConfirmBtn: { padding: '9px 16px', background: 'var(--t-button-bg)', color: 'var(--t-button-text)', border: 'none', borderRadius: 'var(--t-radius-button)', fontSize: '13px', fontWeight: '600', cursor: 'pointer', fontFamily: 'var(--font-sans)', whiteSpace: 'nowrap' },
   noSchedMsg: { padding: '16px 22px', fontSize: '14px', color: 'var(--color-ink-subtle)', fontStyle: 'italic' },
@@ -645,7 +694,7 @@ const mtS = {
   sessionPageEyebrow: { fontSize: '14px', color: 'var(--color-ink-subtle)', marginBottom: '6px' },
   sessionPageTitle: { fontSize: '32px', fontWeight: 'var(--t-display-weight)', color: 'var(--color-ink)', margin: '0', letterSpacing: 'var(--t-display-tracking)' },
   sessionPageMeta: { fontSize: '14px', color: 'var(--color-ink-subtle)', marginTop: '8px' },
-  statusBadge: done => ({ display: 'inline-flex', padding: '6px 14px', borderRadius: '999px', fontSize: '13px', fontWeight: '500', background: done ? '#dcfce7' : '#dbeafe', color: done ? 'var(--color-semantic-success)' : 'var(--color-report-blue)', whiteSpace: 'nowrap' }),
+  statusBadge: done => ({ display: 'inline-flex', padding: '6px 14px', borderRadius: '999px', fontSize: '13px', fontWeight: '500', background: done ? 'var(--color-status-done-bg)' : 'var(--color-status-progress-bg)', color: done ? 'var(--color-semantic-success)' : 'var(--color-report-blue)', whiteSpace: 'nowrap' }),
   section: { marginBottom: '32px' },
   sectionTitle: { fontSize: '18px', fontWeight: '500', color: 'var(--color-ink)', margin: '0 0 14px' },
   sectionHint: { fontSize: '13px', fontWeight: '400', color: 'var(--color-ink-subtle)', marginLeft: '8px' },
@@ -655,7 +704,7 @@ const mtS = {
   downloadBtn: { padding: '10px 18px', background: '#fff', border: '1px solid var(--color-hairline)', borderRadius: '8px', fontSize: '13px', cursor: 'pointer', fontFamily: 'var(--font-sans)', color: 'var(--color-ink)', whiteSpace: 'nowrap' },
   fileLabel: { display: 'block', cursor: 'pointer', marginBottom: '4px' },
   fileBtn: { padding: '18px 22px', border: '1px dashed var(--color-hairline)', borderRadius: '10px', background: 'var(--color-surface-1)', fontSize: '14px', cursor: 'pointer' },
-  fileChipLg: { display: 'inline-flex', alignItems: 'center', gap: '10px', fontSize: '15px', color: 'var(--color-report-blue)', background: '#eff6ff', padding: '14px 22px', borderRadius: '10px', border: '1px solid #c7d2fe', cursor: 'pointer', fontFamily: 'var(--font-sans)', fontWeight: '500' },
+  fileChipLg: { display: 'inline-flex', alignItems: 'center', gap: '10px', fontSize: '15px', color: 'var(--color-report-blue)', background: 'var(--color-status-progress-bg)', padding: '14px 22px', borderRadius: '10px', border: '1px solid var(--color-status-progress-border)', cursor: 'pointer', fontFamily: 'var(--font-sans)', fontWeight: '500' },
   fileChipHint: { fontSize: '12px', color: 'var(--color-ink-muted)', marginLeft: '6px', fontWeight: '400' },
   photoGridLg: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '14px' },
   submitBtn: { width: '100%', padding: '14px', background: 'var(--t-button-bg)', color: 'var(--t-button-text)', border: 'none', borderRadius: 'var(--t-radius-button)', fontSize: '16px', fontWeight: '600', cursor: 'pointer', fontFamily: 'var(--font-sans)', marginTop: '20px' },

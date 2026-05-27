@@ -7,7 +7,8 @@
  * @google-fonts JetBrains+Mono:wght@400
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&family=Roboto:wght@400;500;700&family=JetBrains+Mono:wght@400&display=swap');
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap');
 
 /* ─────────────────────────────────────────────
    THEME TOKENS — 4 variants
@@ -24,13 +25,16 @@
   --t-ink-subtle: #7b7b78;
   --t-hairline: #d3cec6;
   --t-hairline-soft: #e8e4df;
-  --t-accent: #ff5600;
-  --t-accent-soft: #fff5eb;
-  --t-success: #1a8a3c;
+  /* 부천시 행정 톤 — 베이지 베이스와 색온도 정합 위해 채도 다운 */
+  --t-accent: #d94f00;          /* 액센트 오렌지 (#ff5600 → 채도 다운) */
+  --t-accent-soft: #fdf0e6;
+  --t-success: #15803d;         /* 완료 그린 */
   --t-success-bg: #dcfce7;
-  --t-info: #2254f4;
-  --t-info-bg: #dbeafe;
-  --t-warn: #f59e0b;
+  --t-info: #1e40af;            /* 진행/예정 네이비 (#2254f4 → 딥 네이비) */
+  --t-info-bg: #e0e7ff;
+  --t-warn: #c2731c;             /* 경고/임박 — 더 차분한 앰버 */
+  --t-warn-bg: #fef3c7;
+  --t-warn-ink: #92400e;
 
   --t-button-bg: #111111;
   --t-button-text: #ffffff;
@@ -41,8 +45,9 @@
   --t-topbar-border: 1px solid var(--t-hairline);
   --t-nav-active-bg: var(--t-canvas);
 
-  --t-card-shadow: none;
-  --t-card-shadow-lifted: none;
+  /* 위계 2단계 — 평면이지만 카드 경계는 살짝 떠있게 */
+  --t-card-shadow: 0 1px 2px rgba(17, 17, 17, 0.04), 0 1px 1px rgba(17, 17, 17, 0.03);
+  --t-card-shadow-lifted: 0 4px 12px rgba(17, 17, 17, 0.08), 0 2px 4px rgba(17, 17, 17, 0.04);
   --t-card-border: 1px solid var(--t-hairline);
 
   --t-radius-card: 14px;
@@ -51,14 +56,15 @@
   --t-radius-input: 8px;
   --t-radius-chip: 999px;
 
-  --t-display-weight: 500;
-  --t-display-tracking: -0.5px;
+  /* 행정 톤 — 디스플레이는 좀 더 단단하게 (500 → 600) */
+  --t-display-weight: 600;
+  --t-display-tracking: -0.4px;
 
   --t-banner-display: none;
   --t-banner-bg: transparent;
   --t-banner-text: transparent;
 
-  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-sans: 'Pretendard Variable', Pretendard, 'Inter', system-ui, sans-serif;
 }
 
 /* Map existing --color-* tokens to themed ones */
@@ -72,12 +78,28 @@
   --color-ink-tertiary: var(--t-ink-subtle);
   --color-hairline: var(--t-hairline);
   --color-hairline-soft: var(--t-hairline-soft);
+
+  /* 도메인 중립 토큰 (신규 권장) */
+  --color-accent: var(--t-accent);
+  --color-accent-soft: var(--t-accent-soft);
+  --color-status-progress: var(--t-info);    /* 진행/예정 */
+  --color-status-progress-bg: var(--t-info-bg);
+  --color-status-progress-border: #c7d2fe;
+  --color-status-done: var(--t-success);     /* 완료 */
+  --color-status-done-bg: var(--t-success-bg);
+  --color-status-warn: var(--t-warn);        /* 임박/주의 */
+  --color-status-warn-bg: var(--t-warn-bg);
+  --color-status-warn-ink: var(--t-warn-ink);
+  --color-chart-blue: var(--t-info);
+  --color-chart-green: var(--t-success);
+
+  /* Intercom 출처 토큰 — 하위호환 alias (점진적 폐기) */
   --color-fin-orange: var(--t-accent);
   --color-report-orange: var(--t-accent);
   --color-report-blue: var(--t-info);
   --color-brand-blue: var(--t-info);
   --color-semantic-success: var(--t-success);
-  --color-semantic-error: #ef4444;
+  --color-semantic-error: #e0341e;
 }
 
 /* ─────────────────────────────────────────────
@@ -87,17 +109,19 @@
 
 :root {
   /* ─── FONT FAMILIES ─── */
-  --font-sans:   'Inter', 'Saans Fallback', ui-sans-serif, system-ui, sans-serif;
-  --font-mono:   'JetBrains Mono', 'SaansMono Fallback', ui-monospace, monospace;
+  /* Pretendard 우선 (한글 가독성), Inter는 라틴 fallback */
+  --font-sans:   'Pretendard Variable', Pretendard, 'Inter', -apple-system, BlinkMacSystemFont, system-ui, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  --font-mono:   'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
   /* ─────────────────────────────────────────────
      COLORS — Brand & Accent
   ───────────────────────────────────────────── */
   --color-ink:           #111111;   /* Charcoal — system primary */
   --color-on-primary:    #ffffff;   /* White — text on charcoal CTAs */
-  --color-fin-orange:    #ff5600;   /* Fin AI accent — reserved for Fin CTA/badge only */
-  --color-report-orange: #ff7a2e;   /* Report palette orange (in-product analytics only) */
-  --color-brand-blue:    #0007cb;   /* Saturated marketing-illustration blue */
+  /* 하위호환 alias (jsx 안 raw 참조용) */
+  --color-fin-orange:    var(--t-accent);
+  --color-report-orange: var(--t-accent);
+  --color-brand-blue:    var(--t-info);
 
   /* ─────────────────────────────────────────────
      COLORS — Surfaces
@@ -122,17 +146,18 @@
   /* ─────────────────────────────────────────────
      COLORS — Semantic
   ───────────────────────────────────────────── */
-  --color-semantic-error:   #e0341e; /* Form validation, destructive */
-  --color-semantic-success: #1a8a3c; /* Positive states */
+  --color-semantic-error:   #c1281a; /* 폼 검증·파괴적 액션 — 베이지 베이스 정합 위해 톤 다운 */
+  --color-semantic-success: var(--t-success);
 
   /* ─────────────────────────────────────────────
-     COLORS — Report Palette (in-product only)
+     COLORS — Chart Palette (in-product only)
+     ※ 행정 시스템 톤: 채도 낮춤 + 따뜻 한쪽
   ───────────────────────────────────────────── */
-  --color-report-blue:  #2254f4;
-  --color-report-green: #1a8a3c;
-  --color-report-pink:  #e8488a;
-  --color-report-lime:  #82c91e;
-  --color-report-cyan:  #12b5c8;
+  --color-report-blue:  var(--t-info);
+  --color-report-green: var(--t-success);
+  --color-report-pink:  #b14a78;
+  --color-report-lime:  #6b9620;
+  --color-report-cyan:  #0f8a99;
 
   /* ─────────────────────────────────────────────
      TYPOGRAPHY — Size Scale
@@ -229,6 +254,15 @@
   ───────────────────────────────────────────── */
   --max-width:     1280px;
   --nav-height:    56px;
+
+  /* ─────────────────────────────────────────────
+     SHADOWS — 일반 위계 (theme-independent)
+  ───────────────────────────────────────────── */
+  --shadow-xs:  0 1px 2px rgba(17, 17, 17, 0.04);
+  --shadow-sm:  0 1px 2px rgba(17, 17, 17, 0.06), 0 1px 1px rgba(17, 17, 17, 0.03);
+  --shadow-md:  0 4px 12px rgba(17, 17, 17, 0.08), 0 2px 4px rgba(17, 17, 17, 0.04);
+  --shadow-lg:  0 12px 32px rgba(17, 17, 17, 0.12), 0 4px 8px rgba(17, 17, 17, 0.06);
+  --shadow-focus: 0 0 0 3px rgba(34, 84, 244, 0.18); /* 포커스 링 */
 }
 
 /* ─────────────────────────────────────────────

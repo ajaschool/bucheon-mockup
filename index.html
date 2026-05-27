@@ -13,8 +13,7 @@
     button { cursor: pointer; }
     input:focus, select:focus { outline: 2px solid var(--color-ink); outline-offset: 1px; }
 
-    /* Calendar today cell: white text */
-    .cal-today-num { color: #fff !important; }
+    /* Calendar today cell: 외곽선 강조 (검정 채움 폐기) */
 
     /* Scrollbar */
     ::-webkit-scrollbar { width: 6px; }
@@ -39,6 +38,7 @@
   <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 
   <!-- Component scripts -->
+  <script type="text/babel" src="Icons.jsx"></script>
   <script type="text/babel" src="Auth.jsx"></script>
   <script type="text/babel" src="AdminApp.jsx"></script>
   <script type="text/babel" src="MentorApp.jsx"></script>

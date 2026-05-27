@@ -1,5 +1,7 @@
 /* ── AdminApp.jsx v3 — Desktop B2B layout, sub-pages instead of modals ── */
 
+const Icon = window.Icon;
+
 function useTheme() {
   const [theme, setTheme] = React.useState(() => window.__theme || 'default');
   React.useEffect(() => {
@@ -40,9 +42,9 @@ const Lightbox = ({ photos, index, onClose }) => {
   const name = photos[i];
   return (
     <div style={adS.lbOverlay} onClick={onClose}>
-      <button style={adS.lbClose} onClick={onClose}>✕</button>
-      {photos.length > 1 && <button style={{ ...adS.lbNav, left: '24px' }} onClick={prev}>‹</button>}
-      {photos.length > 1 && <button style={{ ...adS.lbNav, right: '24px' }} onClick={next}>›</button>}
+      <button style={adS.lbClose} onClick={onClose} aria-label="닫기"><Icon name="x" size={20} color="#fff" /></button>
+      {photos.length > 1 && <button style={{ ...adS.lbNav, left: '24px' }} onClick={prev} aria-label="이전"><Icon name="chevron-left" size={24} color="#fff" /></button>}
+      {photos.length > 1 && <button style={{ ...adS.lbNav, right: '24px' }} onClick={next} aria-label="다음"><Icon name="chevron-right" size={24} color="#fff" /></button>}
       <div style={adS.lbInner} onClick={e => e.stopPropagation()}>
         <div style={{ ...adS.lbPlaceholder, background: photoGradient(i) }}>
           <span style={adS.lbPhotoLabel}>사진 {i + 1}</span>
@@ -65,9 +67,16 @@ const DownloadModal = ({ filename, onClose }) => {
   return (
     <div style={adS.dlOverlay} onClick={onClose}>
       <div style={adS.dlModal} onClick={e => e.stopPropagation()}>
-        <div style={adS.dlIcon}>{done ? '✓' : '↓'}</div>
+        <div style={adS.dlIcon}>
+          {done
+            ? <Icon name="check" size={28} color="var(--color-status-done)" strokeWidth={2.5} />
+            : <Icon name="download" size={26} color="var(--color-ink)" strokeWidth={2} />}
+        </div>
         <div style={adS.dlTitle}>{done ? '다운로드 완료' : '다운로드 중...'}</div>
-        <div style={adS.dlFile}>📄 {filename}</div>
+        <div style={adS.dlFile}>
+          <Icon name="file-text" size={14} color="var(--color-ink-muted)" />
+          <span>{filename}</span>
+        </div>
         {!done && <div style={adS.dlBar}><div style={adS.dlBarFill}></div></div>}
         <button style={adS.dlBtn} onClick={onClose}>{done ? '확인' : '취소'}</button>
       </div>
@@ -81,6 +90,83 @@ const PhotoTile = ({ index, name, onClick }) => (
     <div style={adS.photoTileLabel}>{name}</div>
   </div>
 );
+
+/* ── 자체 확인 모달 (window.confirm 대체) ── */
+const ConfirmModal = ({ title, message, confirmText = '확인', cancelText = '취소', destructive = false, onConfirm, onClose }) => {
+  React.useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+  return (
+    <div style={adS.modalOverlay} onClick={onClose}>
+      <div style={adS.modalCard} onClick={e => e.stopPropagation()} role="dialog" aria-modal="true">
+        <div style={adS.modalTitle}>{title}</div>
+        <div style={adS.modalMessage}>{message}</div>
+        <div style={adS.modalBtnRow}>
+          <button style={adS.modalCancelBtn} onClick={onClose}>{cancelText}</button>
+          <button
+            style={destructive ? adS.modalDestructiveBtn : adS.modalConfirmBtn}
+            onClick={() => { onConfirm(); onClose(); }}
+            autoFocus
+          >{confirmText}</button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ── 멘토 거부 모달 (사유 입력 필수, 행정 감사 추적) ── */
+const RejectModal = ({ mentorName, onReject, onClose }) => {
+  const [reason, setReason] = React.useState('');
+  const [touched, setTouched] = React.useState(false);
+  const trimmed = reason.trim();
+  const isValid = trimmed.length >= 5;
+
+  React.useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  const handleSubmit = () => {
+    setTouched(true);
+    if (!isValid) return;
+    onReject(trimmed);
+    onClose();
+  };
+
+  return (
+    <div style={adS.modalOverlay} onClick={onClose}>
+      <div style={adS.modalCard} onClick={e => e.stopPropagation()} role="dialog" aria-modal="true">
+        <div style={adS.modalTitle}>멘토 신청 반려</div>
+        <div style={adS.modalMessage}>
+          <strong>{mentorName}</strong> 님의 멘토 신청을 반려합니다.<br />
+          사유는 신청자에게 안내됩니다.
+        </div>
+        <div style={{ marginTop: '16px' }}>
+          <label style={adS.modalLabel}>반려 사유 <span style={{ color: 'var(--color-semantic-error)' }}>*</span></label>
+          <textarea
+            value={reason}
+            onChange={e => setReason(e.target.value)}
+            onBlur={() => setTouched(true)}
+            placeholder="반려 사유를 5자 이상 입력해 주세요."
+            rows={4}
+            style={adS.modalTextarea}
+            autoFocus
+          />
+          {touched && !isValid && (
+            <div style={adS.modalFieldError}>반려 사유는 5자 이상 입력해야 합니다.</div>
+          )}
+        </div>
+        <div style={adS.modalBtnRow}>
+          <button style={adS.modalCancelBtn} onClick={onClose}>취소</button>
+          <button style={adS.modalDestructiveBtn} onClick={handleSubmit}>반려 처리</button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const AdminApp = ({ user, onLogout }) => {
   const theme = useTheme();
@@ -190,9 +276,10 @@ const AdminDashboard = ({ db, refresh, onTab, onMentorClick }) => {
         <StatCard label="배정된 멘티" value={`${db.mentees.length}개`} />
         <StatCard label="전체 일정" value={`${db.schedules.length}건`} sub={`완료 ${completed.length}건 · 예정 ${db.schedules.length - completed.length}건`} />
         <StatCard
+          primary
           label="전체 완료율"
           value={`${rate}%`}
-          accent={rate >= 50 ? 'var(--color-semantic-success)' : 'var(--color-fin-orange)'}
+          accent={rate >= 50 ? 'var(--color-status-done)' : 'var(--color-accent)'}
           sub={`${completed.length} / ${db.schedules.length}건`}
         />
       </div>
@@ -203,19 +290,19 @@ const AdminDashboard = ({ db, refresh, onTab, onMentorClick }) => {
           <div style={adS.alertList}>
             {pending.length > 0 && (
               <div style={{ ...adS.alertItem, cursor: 'pointer' }} onClick={() => onTab('mentors')}>
-                <div style={adS.alertDot('#f59e0b')}></div>
+                <div style={adS.alertDot('var(--color-status-warn)')}></div>
                 <div style={{ flex: 1 }}>
                   <div style={adS.alertMain}>승인 대기 중인 멘토 <strong>{pending.length}명</strong></div>
                   <div style={adS.alertSub}>{pending.map(p => p.name).join(', ')} · 멘토 관리에서 승인하세요</div>
                 </div>
-                <span style={adS.alertArrow}>→</span>
+                <Icon name="arrow-right" size={16} color="var(--color-ink-muted)" />
               </div>
             )}
             {noScheduleMentors.map(m => (
               <div key={m.id} style={adS.alertItem}>
-                <div style={adS.alertDot('#e0341e')}></div>
+                <div style={adS.alertDot('var(--color-semantic-error)')}></div>
                 <div style={{ flex: 1 }}>
-                  <div style={adS.alertMain}><strong>{m.name}</strong> — 스케쥴 미등록</div>
+                  <div style={adS.alertMain}><strong>{m.name}</strong> · 일정 미등록</div>
                   <div style={adS.alertSub}>{m.company} · 멘티 {db.mentees.filter(mt => mt.mentorId === m.id).length}개 업체 배정됨</div>
                 </div>
               </div>
@@ -239,7 +326,7 @@ const AdminDashboard = ({ db, refresh, onTab, onMentorClick }) => {
                 <div style={adS.progressLeft}>
                   <div>
                     <div style={adS.progressName}>{m.name}</div>
-                    <div style={adS.progressMeta}>{m.company} · 멘티 {menteeCount}개</div>
+                    <div style={adS.progressMeta}>{m.company} · 멘티 {menteeCount}개 업체</div>
                   </div>
                 </div>
                 <div style={adS.progressRight}>
@@ -247,7 +334,7 @@ const AdminDashboard = ({ db, refresh, onTab, onMentorClick }) => {
                     <div style={{ ...adS.progressBarFill, width: pct + '%', background: pct === 100 ? 'var(--color-semantic-success)' : 'var(--color-report-blue)' }}></div>
                   </div>
                   <div style={adS.progressLabel}>{done}/{total}건 <span style={{ color: 'var(--color-ink-subtle)' }}>({pct}%)</span></div>
-                  <span style={adS.chevron}>›</span>
+                  <Icon name="chevron-right" size={16} color="var(--color-ink-muted)" />
                 </div>
               </div>
             );
@@ -258,9 +345,10 @@ const AdminDashboard = ({ db, refresh, onTab, onMentorClick }) => {
   );
 };
 
-/* ── Stat Card ── */
-const StatCard = ({ label, value, sub, accent }) => (
-  <div style={adS.statCard}>
+/* ── Stat Card ── primary: 1순위 KPI 강조 (lifted shadow + accent strip) */
+const StatCard = ({ label, value, sub, accent, primary = false }) => (
+  <div style={primary ? { ...adS.statCard, ...adS.statCardPrimary } : adS.statCard}>
+    {primary && <div style={{ ...adS.statCardStripe, background: accent || 'var(--color-ink)' }} />}
     <div style={adS.statLabel}>{label}</div>
     <div style={{ ...adS.statValue, ...(accent ? { color: accent } : {}) }}>{value}</div>
     {sub && <div style={adS.statSub}>{sub}</div>}
@@ -280,7 +368,9 @@ const MentorDetailPage = ({ mentor, db, onBack }) => {
 
   return (
     <div style={adS.content}>
-      <button onClick={onBack} style={adS.backBtn}>← 대시보드로 돌아가기</button>
+      <button onClick={onBack} style={adS.backBtn}>
+        <Icon name="arrow-left" size={14} style={{ marginRight: '6px' }} />대시보드로 돌아가기
+      </button>
 
       <div style={adS.detailHero}>
         <div style={adS.detailHeroLeft}>
@@ -335,12 +425,14 @@ const MentorDetailPage = ({ mentor, db, onBack }) => {
                       <span style={adS.statusBadge(s.status === 'completed')}>{s.status === 'completed' ? '완료' : '예정'}</span>
                       {s.reportFilename && (
                         <button style={adS.detailFileBtn} onClick={() => setDownloadFile(s.reportFilename)}>
-                          📄 {s.reportFilename}
+                          <Icon name="file-text" size={14} color="var(--color-ink-muted)" />
+                          <span>{s.reportFilename}</span>
                         </button>
                       )}
                       {s.photos && s.photos.length > 0 && (
                         <button style={adS.detailPhotoBtn} onClick={() => setLightbox({ photos: s.photos, index: 0 })}>
-                          📸 {s.photos.length}장
+                          <Icon name="camera" size={14} color="var(--color-ink-muted)" />
+                          <span>사진 {s.photos.length}장</span>
                         </button>
                       )}
                     </div>
@@ -361,6 +453,8 @@ const MentorManagement = ({ db, refresh }) => {
   const [addingFor, setAddingFor] = React.useState(null);
   const [newForm, setNewForm] = React.useState({ name: '', contactName: '', contactPhone: '' });
   const [subTab, setSubTab] = React.useState('all');
+  const [rejectingMentor, setRejectingMentor] = React.useState(null); // {id, name}
+  const [removingMentee, setRemovingMentee] = React.useState(null);   // {id, name}
 
   const mentors = db.users.filter(u => u.role === 'mentor');
   const pending = mentors.filter(u => !u.approved);
@@ -370,17 +464,23 @@ const MentorManagement = ({ db, refresh }) => {
   const setF = k => e => setNewForm(p => ({ ...p, [k]: e.target.value }));
 
   const handleApprove = (id) => { window.DB.setApproved(id, true); refresh(); };
-  const handleReject = (id) => { if (window.confirm('거부하시겠습니까?')) { window.DB.setApproved(id, false); refresh(); } };
+  // 거부 사유는 행정 감사 기록용 — 실제 백엔드에서는 audit log + 신청자 알림에 사용
+  const handleRejectConfirm = (reason) => {
+    if (!rejectingMentor) return;
+    window.DB.setApproved(rejectingMentor.id, false);
+    // TODO: 백엔드 연동 시 reason을 RejectionLog 엔티티에 저장
+    refresh();
+  };
   const handleAddMentee = (mentorId) => {
     if (!newForm.name.trim()) return;
     window.DB.addMentee(mentorId, newForm.name.trim(), newForm.contactName.trim(), newForm.contactPhone.trim());
     setNewForm({ name: '', contactName: '', contactPhone: '' });
     setAddingFor(null); refresh();
   };
-  const handleRemoveMentee = (menteeId, name) => {
-    if (window.confirm(`'${name}'을(를) 삭제하시겠습니까? 관련 스케쥴도 함께 삭제됩니다.`)) {
-      window.DB.removeMentee(menteeId); refresh();
-    }
+  const handleRemoveMenteeConfirm = () => {
+    if (!removingMentee) return;
+    window.DB.removeMentee(removingMentee.id);
+    refresh();
   };
 
   return (
@@ -410,12 +510,12 @@ const MentorManagement = ({ db, refresh }) => {
                 <div style={adS.mentorRight}>
                   {m.approved
                     ? <><span style={adS.badge('green')}>승인됨</span>
-                        <span style={adS.metaChip}>멘티 {mentees.length}개</span>
+                        <span style={adS.metaChip}>멘티 {mentees.length}개 업체</span>
                         <span style={adS.metaChip}>일정 {scheds.length}건</span>
-                        <span style={adS.chevron}>{isOpen ? '▲' : '▼'}</span></>
+                        <Icon name={isOpen ? 'chevron-up' : 'chevron-down'} size={16} color="var(--color-ink-muted)" /></>
                     : <><span style={adS.badge('orange')}>대기중</span>
                         <button style={adS.approveBtn} onClick={e => { e.stopPropagation(); handleApprove(m.id); }}>승인</button>
-                        <button style={adS.rejectBtn} onClick={e => { e.stopPropagation(); handleReject(m.id); }}>거부</button></>
+                        <button style={adS.rejectBtn} onClick={e => { e.stopPropagation(); setRejectingMentor({ id: m.id, name: m.name }); }}>반려</button></>
                   }
                 </div>
               </div>
@@ -437,7 +537,7 @@ const MentorManagement = ({ db, refresh }) => {
                           </div>
                         </div>
                         <span style={adS.menteeSchedInfo}>일정 {mScheds.length}건 · 완료 {mDone}건</span>
-                        <button style={adS.removeBtn} onClick={() => handleRemoveMentee(mt.id, mt.name)}>삭제</button>
+                        <button style={adS.removeBtn} onClick={() => setRemovingMentee({ id: mt.id, name: mt.name })}>삭제</button>
                       </div>
                     );
                   })}
@@ -472,6 +572,24 @@ const MentorManagement = ({ db, refresh }) => {
           );
         })}
       </div>
+
+      {rejectingMentor && (
+        <RejectModal
+          mentorName={rejectingMentor.name}
+          onReject={handleRejectConfirm}
+          onClose={() => setRejectingMentor(null)}
+        />
+      )}
+      {removingMentee && (
+        <ConfirmModal
+          title="멘티 업체 삭제"
+          message={<><strong>{removingMentee.name}</strong> 을(를) 삭제합니다.<br />이 멘티에 등록된 일정도 함께 삭제되며, 되돌릴 수 없습니다.</>}
+          confirmText="삭제"
+          destructive
+          onConfirm={handleRemoveMenteeConfirm}
+          onClose={() => setRemovingMentee(null)}
+        />
+      )}
     </div>
   );
 };
@@ -499,50 +617,66 @@ const ReportsView = ({ db, onReportClick }) => {
       </div>
       <div style={adS.reportSummary}>완료된 멘토링 총 <strong>{totalCompleted}건</strong></div>
 
-      {displayMentors.map(mentor => {
+      {displayMentors.map((mentor, mentorIdx) => {
         const mentees = db.mentees.filter(mt => mt.mentorId === mentor.id);
         const mentorCompleted = db.schedules.filter(s => s.mentorId === mentor.id && s.status === 'completed');
         if (mentorCompleted.length === 0 && filterMentor !== mentor.id) return null;
         return (
-          <div key={mentor.id} style={adS.reportMentorSection}>
-            <div style={adS.reportMentorHeader}>
-                            <div style={{ flex: 1 }}>
-                <span style={adS.reportMentorName}>{mentor.name}</span>
-                <span style={adS.reportMentorCompany}> — {mentor.company}</span>
+          <div key={mentor.id} style={adS.reportMentorBlock}>
+            {/* 멘토 = 카드 밖 섹션 헤더 (그룹 구분자) */}
+            <div style={adS.reportMentorSectionHeader}>
+              <div style={adS.reportMentorSectionLeft}>
+                <span style={adS.reportMentorSectionIndex}>멘토 {String(mentorIdx + 1).padStart(2, '0')}</span>
+                <span style={adS.reportMentorSectionName}>{mentor.name}</span>
+                <span style={adS.reportMentorSectionCompany}>{mentor.company}</span>
               </div>
-              <span style={adS.reportMentorCount}>{mentorCompleted.length}건 완료</span>
+              <span style={adS.reportMentorSectionCount}>{mentorCompleted.length}건 완료</span>
             </div>
 
-            {mentees.map(mt => {
-              const mtCompleted = db.schedules
-                .filter(s => s.menteeId === mt.id && s.status === 'completed')
-                .sort((a, b) => b.date.localeCompare(a.date));
-              if (mtCompleted.length === 0) return null;
-              const key = mt.id;
-              const isOpen = expanded[key] !== false;
-              return (
-                <div key={mt.id} style={adS.reportMenteeGroup}>
-                  <div style={adS.reportMenteeHeader} onClick={() => toggleMentee(key)}>
-                    <div>
-                      <span style={adS.reportMenteeName}>{mt.name}</span>
-                      {mt.contactName && <span style={adS.reportMenteeContact}> / {mt.contactName} {mt.contactPhone}</span>}
+            {/* 멘티 = 카드 (섹션 안의 항목들) */}
+            <div style={adS.reportMenteeList}>
+              {mentees.map(mt => {
+                const mtCompleted = db.schedules
+                  .filter(s => s.menteeId === mt.id && s.status === 'completed')
+                  .sort((a, b) => b.date.localeCompare(a.date));
+                if (mtCompleted.length === 0) return null;
+                const key = mt.id;
+                const isOpen = expanded[key] !== false;
+                return (
+                  <div key={mt.id} style={adS.reportMenteeCard}>
+                    <div style={adS.reportMenteeCardHeader} onClick={() => toggleMentee(key)}>
+                      <div style={adS.reportMenteeCardLeft}>
+                        <div style={adS.reportMenteeName}>{mt.name}</div>
+                        {mt.contactName && (
+                          <div style={adS.reportMenteeContact}>
+                            담당 {mt.contactName} · {mt.contactPhone}
+                          </div>
+                        )}
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <span style={adS.reportCount}>{mtCompleted.length}건</span>
+                        <Icon name={isOpen ? 'chevron-up' : 'chevron-down'} size={16} color="var(--color-ink-muted)" />
+                      </div>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={adS.reportCount}>{mtCompleted.length}건</span>
-                      <span style={adS.chevron}>{isOpen ? '▲' : '▼'}</span>
-                    </div>
+                    {isOpen && mtCompleted.map(s => (
+                      <div key={s.id} style={adS.reportRow}
+                        onClick={() => onReportClick({ scheduleId: s.id, mentorId: mentor.id, menteeId: mt.id })}>
+                        <span style={adS.reportDate}>{s.date.replace(/-/g, '. ')}</span>
+                        <span style={adS.reportFile}>
+                          <Icon name="file-text" size={14} color="var(--color-ink-muted)" />
+                          <span>{s.reportFilename}</span>
+                        </span>
+                        <span style={adS.reportPhotos}>
+                          <Icon name="camera" size={14} color="var(--color-ink-muted)" />
+                          <span>사진 {s.photos.length}장</span>
+                        </span>
+                        <button style={adS.viewBtn} onClick={(e) => { e.stopPropagation(); onReportClick({ scheduleId: s.id, mentorId: mentor.id, menteeId: mt.id }); }}>상세</button>
+                      </div>
+                    ))}
                   </div>
-                  {isOpen && mtCompleted.map(s => (
-                    <div key={s.id} style={adS.reportRow}>
-                      <span style={adS.reportDate}>{s.date.replace(/-/g, '. ')}</span>
-                      <span style={adS.reportFile}>📄 {s.reportFilename}</span>
-                      <span style={adS.reportPhotos}>📸 {s.photos.length}장</span>
-                      <button style={adS.viewBtn} onClick={() => onReportClick({ scheduleId: s.id, mentorId: mentor.id, menteeId: mt.id })}>보기</button>
-                    </div>
-                  ))}
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
 
             {mentorCompleted.length === 0 && (
               <div style={adS.reportNoData}>완료된 멘토링이 없습니다.</div>
@@ -562,15 +696,29 @@ const ReportDetailPage = ({ view, db, onBack }) => {
   const s = db.schedules.find(x => x.id === view.scheduleId);
   const mentor = db.users.find(u => u.id === view.mentorId);
   const mentee = db.mentees.find(m => m.id === view.menteeId);
-  if (!s || !mentor || !mentee) return <div style={adS.content}><button onClick={onBack} style={adS.backBtn}>← 돌아가기</button></div>;
+  if (!s || !mentor || !mentee) return (
+    <div style={adS.content}>
+      <button onClick={onBack} style={adS.backBtn}>
+        <Icon name="arrow-left" size={14} style={{ marginRight: '6px' }} />돌아가기
+      </button>
+    </div>
+  );
 
   return (
     <div style={adS.content}>
-      <button onClick={onBack} style={adS.backBtn}>← 보고서 목록으로</button>
+      <button onClick={onBack} style={adS.backBtn}>
+        <Icon name="arrow-left" size={14} style={{ marginRight: '6px' }} />보고서 목록으로
+      </button>
       <div style={adS.pageHeader}>
         <div>
           <h2 style={adS.pageTitle}>멘토링 보고서</h2>
-          <div style={adS.detailHeroMeta}>{s.date.replace(/-/g, '. ')} · {mentor.name} → {mentee.name}</div>
+          <div style={adS.detailHeroMeta}>
+            <span>{s.date.replace(/-/g, '. ')}</span>
+            <span style={{ margin: '0 8px', color: 'var(--color-ink-tertiary)' }}>·</span>
+            <span>{mentor.name}</span>
+            <Icon name="arrow-right" size={12} color="var(--color-ink-tertiary)" style={{ margin: '0 6px' }} />
+            <span>{mentee.name}</span>
+          </div>
         </div>
       </div>
 
@@ -594,9 +742,11 @@ const ReportDetailPage = ({ view, db, onBack }) => {
       <div style={adS.section}>
         <h3 style={adS.sectionTitle}>제출 보고서</h3>
         <button style={adS.fileChipLg} onClick={() => setDownloadFile(s.reportFilename)}>
-          <span style={{ fontSize: '18px' }}>📄</span>
+          <Icon name="file-text" size={18} color="var(--color-ink)" />
           <span>{s.reportFilename}</span>
-          <span style={adS.fileChipHint}>다운로드</span>
+          <span style={adS.fileChipHint}>
+            <Icon name="download" size={14} color="var(--color-ink-muted)" style={{ marginRight: '4px' }} />다운로드
+          </span>
         </button>
       </div>
 
@@ -646,6 +796,8 @@ const adS = {
 
   statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '40px' },
   statCard: { background: 'var(--color-surface-1)', border: 'var(--t-card-border)', borderRadius: 'var(--t-radius-card)', padding: '24px 28px', boxShadow: 'var(--t-card-shadow)' },
+  statCardPrimary: { boxShadow: 'var(--shadow-md)', borderColor: 'var(--color-hairline)', position: 'relative', overflow: 'hidden' },
+  statCardStripe: { position: 'absolute', left: 0, top: 0, bottom: 0, width: '3px' },
   statLabel: { fontSize: '14px', color: 'var(--color-ink-subtle)', marginBottom: '12px' },
   statValue: { fontSize: '36px', fontWeight: 'var(--t-display-weight)', letterSpacing: 'var(--t-display-tracking)', color: 'var(--color-ink)', lineHeight: '1.1' },
   statSub: { fontSize: '13px', color: 'var(--color-ink-subtle)', marginTop: '8px' },
@@ -688,7 +840,7 @@ const adS = {
   mentorPos: { fontSize: '13px', fontWeight: '400', color: 'var(--color-ink-muted)' },
   mentorMeta: { fontSize: '13px', color: 'var(--color-ink-subtle)' },
   mentorRight: { display: 'flex', alignItems: 'center', gap: '10px' },
-  badge: color => ({ fontSize: '12px', fontWeight: '500', padding: '4px 10px', borderRadius: '999px', background: color === 'green' ? '#dcfce7' : '#fef3c7', color: color === 'green' ? 'var(--color-semantic-success)' : '#92400e' }),
+  badge: color => ({ fontSize: '12px', fontWeight: '500', padding: '4px 10px', borderRadius: '999px', background: color === 'green' ? 'var(--color-status-done-bg)' : 'var(--color-status-warn-bg)', color: color === 'green' ? 'var(--color-semantic-success)' : 'var(--color-status-warn-ink)' }),
   metaChip: { fontSize: '13px', color: 'var(--color-ink-subtle)', background: 'var(--color-canvas)', padding: '4px 10px', borderRadius: '999px' },
   approveBtn: { padding: '7px 16px', background: 'var(--t-button-bg)', color: 'var(--t-button-text)', border: 'none', borderRadius: 'var(--t-radius-button)', fontSize: '13px', fontWeight: '600', cursor: 'pointer', fontFamily: 'var(--font-sans)' },
   rejectBtn: { padding: '7px 16px', background: 'transparent', color: 'var(--color-semantic-error)', border: '1px solid var(--color-semantic-error)', borderRadius: '8px', fontSize: '13px', cursor: 'pointer', fontFamily: 'var(--font-sans)' },
@@ -714,24 +866,48 @@ const adS = {
 
   emptyState: { padding: '56px', textAlign: 'center', color: 'var(--color-ink-subtle)', fontSize: '15px' },
   filterSelect: { padding: '10px 14px', border: '1px solid var(--color-hairline)', borderRadius: '8px', fontSize: '14px', fontFamily: 'var(--font-sans)', background: '#fff', color: 'var(--color-ink)', cursor: 'pointer', outline: 'none' },
-  reportSummary: { fontSize: '14px', color: 'var(--color-ink-muted)', marginBottom: '24px' },
+  reportSummary: { fontSize: '14px', color: 'var(--color-ink-muted)', marginBottom: '32px' },
 
-  reportMentorSection: { background: 'var(--color-surface-1)', border: 'var(--t-card-border)', borderRadius: 'var(--t-radius-card)', marginBottom: '16px', overflow: 'hidden', boxShadow: 'var(--t-card-shadow)' },
-  reportMentorHeader: { display: 'flex', alignItems: 'center', gap: '14px', padding: '20px 24px', borderBottom: '1px solid var(--color-hairline-soft)' },
-  reportMentorName: { fontSize: '17px', fontWeight: '500', color: 'var(--color-ink)' },
-  reportMentorCompany: { fontSize: '14px', color: 'var(--color-ink-muted)' },
-  reportMentorCount: { fontSize: '14px', color: 'var(--color-ink-subtle)', marginLeft: 'auto' },
-  reportMenteeGroup: { borderBottom: '1px solid var(--color-hairline-soft)' },
-  reportMenteeHeader: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 24px', cursor: 'pointer', background: 'var(--color-canvas)' },
-  reportMenteeName: { fontSize: '14px', fontWeight: '500', color: 'var(--color-ink)' },
-  reportMenteeContact: { fontSize: '13px', color: 'var(--color-ink-subtle)' },
-  reportCount: { fontSize: '13px', color: 'var(--color-ink-subtle)', background: 'var(--color-surface-2)', padding: '3px 10px', borderRadius: '999px' },
-  reportRow: { display: 'flex', alignItems: 'center', gap: '14px', padding: '14px 24px 14px 40px', borderTop: '1px solid var(--color-hairline-soft)' },
-  reportDate: { fontSize: '14px', color: 'var(--color-ink)', minWidth: '110px' },
-  reportFile: { fontSize: '13px', color: 'var(--color-ink-muted)', flex: 1 },
-  reportPhotos: { fontSize: '13px', color: 'var(--color-ink-subtle)' },
+  /* 옵션 B: 멘토 = 카드 밖 섹션 헤더 (그룹 구분자) */
+  reportMentorBlock: { marginBottom: '40px' },
+  reportMentorSectionHeader: {
+    display: 'flex', alignItems: 'baseline', justifyContent: 'space-between',
+    padding: '14px 4px 14px 16px', marginBottom: '12px',
+    borderBottom: '1px solid var(--color-hairline)',
+    borderLeft: '3px solid var(--color-ink)',
+  },
+  reportMentorSectionLeft: { display: 'flex', alignItems: 'baseline', gap: '12px', flex: 1, minWidth: 0 },
+  reportMentorSectionIndex: {
+    fontSize: '11px', fontWeight: '600', color: 'var(--color-ink-subtle)',
+    letterSpacing: '0.8px', textTransform: 'uppercase',
+    fontVariantNumeric: 'tabular-nums',
+  },
+  reportMentorSectionName: { fontSize: '18px', fontWeight: '600', color: 'var(--color-ink)', letterSpacing: '-0.2px' },
+  reportMentorSectionCompany: { fontSize: '14px', color: 'var(--color-ink-muted)' },
+  reportMentorSectionCount: {
+    fontSize: '13px', fontWeight: '600', color: 'var(--color-ink)',
+    background: 'var(--color-surface-2)', padding: '4px 12px', borderRadius: '999px',
+    flexShrink: 0,
+  },
+
+  reportMenteeList: { display: 'flex', flexDirection: 'column', gap: '10px' },
+  reportMenteeCard: { background: 'var(--color-surface-1)', border: 'var(--t-card-border)', borderRadius: 'var(--t-radius-card)', overflow: 'hidden', boxShadow: 'var(--t-card-shadow)' },
+  reportMenteeCardHeader: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', cursor: 'pointer' },
+  reportMenteeCardLeft: { flex: 1, minWidth: 0 },
+  reportMenteeName: { fontSize: '15px', fontWeight: '500', color: 'var(--color-ink)', marginBottom: '2px' },
+  reportMenteeContact: { fontSize: '12px', color: 'var(--color-ink-subtle)' },
+  reportCount: { fontSize: '12px', fontWeight: '500', color: 'var(--color-ink-muted)', background: 'var(--color-canvas)', padding: '3px 10px', borderRadius: '999px' },
+
+  reportRow: {
+    display: 'flex', alignItems: 'center', gap: '14px',
+    padding: '12px 20px', borderTop: '1px solid var(--color-hairline-soft)',
+    cursor: 'pointer', transition: 'background 0.15s',
+  },
+  reportDate: { fontSize: '13px', color: 'var(--color-ink)', minWidth: '92px', fontVariantNumeric: 'tabular-nums' },
+  reportFile: { fontSize: '13px', color: 'var(--color-ink-muted)', flex: 1, display: 'inline-flex', alignItems: 'center', gap: '6px', minWidth: 0, overflow: 'hidden' },
+  reportPhotos: { fontSize: '13px', color: 'var(--color-ink-subtle)', display: 'inline-flex', alignItems: 'center', gap: '4px' },
   reportNoData: { padding: '20px 24px', fontSize: '14px', color: 'var(--color-ink-subtle)' },
-  viewBtn: { padding: '7px 16px', background: 'transparent', border: '1px solid var(--color-hairline)', borderRadius: '8px', fontSize: '13px', color: 'var(--color-ink)', cursor: 'pointer', fontFamily: 'var(--font-sans)', whiteSpace: 'nowrap' },
+  viewBtn: { padding: '6px 14px', background: 'transparent', border: '1px solid var(--color-hairline)', borderRadius: '6px', fontSize: '12px', color: 'var(--color-ink-muted)', cursor: 'pointer', fontFamily: 'var(--font-sans)', whiteSpace: 'nowrap' },
 
   /* Detail page hero */
   detailHero: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '32px' },
@@ -748,7 +924,7 @@ const adS = {
   detailNoSched: { padding: '14px 20px', fontSize: '13px', color: 'var(--color-ink-subtle)' },
   detailSchedRow: { display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 20px', borderTop: '1px solid var(--color-hairline-soft)' },
   detailSchedDate: { fontSize: '14px', color: 'var(--color-ink)', minWidth: '100px' },
-  statusBadge: done => ({ fontSize: '12px', fontWeight: '500', padding: '3px 10px', borderRadius: '999px', background: done ? '#dcfce7' : '#dbeafe', color: done ? 'var(--color-semantic-success)' : 'var(--color-report-blue)', whiteSpace: 'nowrap' }),
+  statusBadge: done => ({ fontSize: '12px', fontWeight: '500', padding: '3px 10px', borderRadius: '999px', background: done ? 'var(--color-status-done-bg)' : 'var(--color-status-progress-bg)', color: done ? 'var(--color-semantic-success)' : 'var(--color-report-blue)', whiteSpace: 'nowrap' }),
   detailFile: { fontSize: '13px', color: 'var(--color-ink-muted)', flex: 1 },
   detailPhoto: { fontSize: '13px', color: 'var(--color-ink-subtle)' },
 
@@ -757,7 +933,7 @@ const adS = {
   reportFieldLabel: { fontSize: '13px', color: 'var(--color-ink-subtle)', marginBottom: '8px' },
   reportFieldValue: { fontSize: '18px', fontWeight: '500', color: 'var(--color-ink)' },
   reportFieldSub: { fontSize: '13px', color: 'var(--color-ink-subtle)', marginTop: '4px' },
-  fileChipLg: { display: 'inline-flex', alignItems: 'center', gap: '10px', fontSize: '15px', color: 'var(--color-report-blue)', background: '#eff6ff', padding: '14px 22px', borderRadius: '10px', border: '1px solid #c7d2fe', cursor: 'pointer', fontFamily: 'var(--font-sans)', fontWeight: '500' },
+  fileChipLg: { display: 'inline-flex', alignItems: 'center', gap: '10px', fontSize: '15px', color: 'var(--color-report-blue)', background: 'var(--color-status-progress-bg)', padding: '14px 22px', borderRadius: '10px', border: '1px solid var(--color-status-progress-border)', cursor: 'pointer', fontFamily: 'var(--font-sans)', fontWeight: '500' },
   fileChipHint: { fontSize: '12px', color: 'var(--color-ink-muted)', marginLeft: '6px', fontWeight: '400' },
 
   photoGridLg: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px' },
@@ -765,7 +941,7 @@ const adS = {
   photoTileNum: { fontSize: '22px', fontWeight: '600', color: '#fff', letterSpacing: '-0.4px', textShadow: '0 1px 3px rgba(0,0,0,0.2)' },
   photoTileLabel: { position: 'absolute', left: 0, right: 0, bottom: 0, padding: '8px 12px', fontSize: '11px', color: '#fff', background: 'linear-gradient(to top, rgba(0,0,0,0.5), transparent)', wordBreak: 'break-all' },
 
-  detailFileBtn: { background: '#eff6ff', border: '1px solid #c7d2fe', color: 'var(--color-report-blue)', fontSize: '13px', padding: '4px 10px', borderRadius: '6px', cursor: 'pointer', fontFamily: 'var(--font-sans)', flex: 1, textAlign: 'left', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+  detailFileBtn: { background: 'var(--color-status-progress-bg)', border: '1px solid var(--color-status-progress-border)', color: 'var(--color-report-blue)', fontSize: '13px', padding: '4px 10px', borderRadius: '6px', cursor: 'pointer', fontFamily: 'var(--font-sans)', flex: 1, textAlign: 'left', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
   detailPhotoBtn: { background: 'var(--color-surface-2)', border: '1px solid var(--color-hairline)', color: 'var(--color-ink)', fontSize: '13px', padding: '4px 10px', borderRadius: '6px', cursor: 'pointer', fontFamily: 'var(--font-sans)' },
 
   /* Lightbox */
@@ -782,12 +958,25 @@ const adS = {
   /* Download modal */
   dlOverlay: { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000 },
   dlModal: { background: '#fff', borderRadius: '16px', padding: '32px 36px', minWidth: '360px', maxWidth: '440px', boxShadow: '0 20px 60px rgba(0,0,0,0.2)', textAlign: 'center' },
-  dlIcon: { width: '56px', height: '56px', borderRadius: '50%', background: 'var(--color-canvas)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px', margin: '0 auto 16px', color: 'var(--color-report-blue)' },
-  dlTitle: { fontSize: '18px', fontWeight: '500', color: 'var(--color-ink)', marginBottom: '8px' },
-  dlFile: { fontSize: '13px', color: 'var(--color-ink-muted)', marginBottom: '20px', wordBreak: 'break-all' },
+  dlIcon: { width: '56px', height: '56px', borderRadius: '50%', background: 'var(--color-canvas)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' },
+  dlTitle: { fontSize: '18px', fontWeight: '600', color: 'var(--color-ink)', marginBottom: '8px' },
+  dlFile: { fontSize: '13px', color: 'var(--color-ink-muted)', marginBottom: '20px', wordBreak: 'break-all', display: 'inline-flex', alignItems: 'center', gap: '6px', justifyContent: 'center' },
   dlBar: { height: '6px', background: 'var(--color-surface-2)', borderRadius: '999px', overflow: 'hidden', marginBottom: '20px' },
   dlBarFill: { height: '100%', width: '70%', background: 'var(--color-report-blue)', borderRadius: '999px', animation: 'none' },
   dlBtn: { padding: '10px 24px', background: 'var(--t-button-bg)', color: 'var(--t-button-text)', border: 'none', borderRadius: 'var(--t-radius-button)', fontSize: '14px', fontWeight: '600', cursor: 'pointer', fontFamily: 'var(--font-sans)' },
+
+  /* ── Confirm / Reject Modal ── */
+  modalOverlay: { position: 'fixed', inset: 0, background: 'rgba(17,17,17,0.36)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2100, padding: '24px' },
+  modalCard: { background: '#fff', borderRadius: '16px', padding: '28px 32px', minWidth: '400px', maxWidth: '480px', boxShadow: 'var(--shadow-lg)' },
+  modalTitle: { fontSize: '18px', fontWeight: '600', color: 'var(--color-ink)', marginBottom: '10px', letterSpacing: '-0.2px' },
+  modalMessage: { fontSize: '14px', color: 'var(--color-ink-muted)', lineHeight: '1.6' },
+  modalLabel: { display: 'block', fontSize: '13px', fontWeight: '500', color: 'var(--color-ink)', marginBottom: '6px' },
+  modalTextarea: { width: '100%', boxSizing: 'border-box', padding: '10px 12px', border: '1px solid var(--color-hairline)', borderRadius: '8px', fontSize: '14px', color: 'var(--color-ink)', background: '#fff', fontFamily: 'var(--font-sans)', resize: 'vertical', lineHeight: '1.5' },
+  modalFieldError: { fontSize: '12px', color: 'var(--color-semantic-error)', marginTop: '6px' },
+  modalBtnRow: { display: 'flex', gap: '8px', justifyContent: 'flex-end', marginTop: '24px' },
+  modalCancelBtn: { padding: '9px 18px', background: 'transparent', color: 'var(--color-ink-muted)', border: '1px solid var(--color-hairline)', borderRadius: 'var(--t-radius-button)', fontSize: '14px', fontWeight: '500', cursor: 'pointer', fontFamily: 'var(--font-sans)' },
+  modalConfirmBtn: { padding: '9px 18px', background: 'var(--t-button-bg)', color: 'var(--t-button-text)', border: 'none', borderRadius: 'var(--t-radius-button)', fontSize: '14px', fontWeight: '600', cursor: 'pointer', fontFamily: 'var(--font-sans)' },
+  modalDestructiveBtn: { padding: '9px 18px', background: 'var(--color-semantic-error)', color: '#fff', border: 'none', borderRadius: 'var(--t-radius-button)', fontSize: '14px', fontWeight: '600', cursor: 'pointer', fontFamily: 'var(--font-sans)' },
 };
 
-Object.assign(window, { AdminApp, stockPhoto, Lightbox, DownloadModal, PhotoTile });
+Object.assign(window, { AdminApp, stockPhoto, Lightbox, DownloadModal, PhotoTile, ConfirmModal, RejectModal });
