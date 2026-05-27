@@ -1,5 +1,15 @@
 /* ── AdminApp.jsx v3 — Desktop B2B layout, sub-pages instead of modals ── */
 
+function useTheme() {
+  const [theme, setTheme] = React.useState(() => window.__theme || 'default');
+  React.useEffect(() => {
+    const onChange = (e) => setTheme(e.detail.theme);
+    window.addEventListener('themechange', onChange);
+    return () => window.removeEventListener('themechange', onChange);
+  }, []);
+  return theme;
+}
+
 const PHOTO_GRADIENTS = [
   'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
   'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
@@ -73,6 +83,7 @@ const PhotoTile = ({ index, name, onClick }) => (
 );
 
 const AdminApp = ({ user, onLogout }) => {
+  const theme = useTheme();
   const [tab, setTab] = React.useState('dashboard');
   const [db, setDb] = React.useState(window.DB.get());
   const [mentorDetailId, setMentorDetailId] = React.useState(null);
@@ -613,18 +624,18 @@ const ReportDetailPage = ({ view, db, onBack }) => {
 /* ── Styles ── */
 const adS = {
   layout: { display: 'flex', minHeight: '100vh', background: 'var(--color-canvas)' },
-  sidebar: { width: '260px', minHeight: '100vh', background: 'var(--color-surface-1)', borderRight: '1px solid var(--color-hairline)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flexShrink: 0, position: 'sticky', top: 0, alignSelf: 'flex-start', height: '100vh' },
+  sidebar: { width: '260px', minHeight: '100vh', background: 'var(--t-topbar-bg)', color: 'var(--t-topbar-text)', borderRight: 'var(--t-topbar-border)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flexShrink: 0, position: 'sticky', top: 0, alignSelf: 'flex-start', height: '100vh', boxShadow: 'var(--t-card-shadow)' },
   sideTop: { padding: '32px 24px 24px' },
   logo: { display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' },
-  logoDot: { width: '32px', height: '32px', background: 'var(--color-ink)', borderRadius: '8px' },
-  logoText: { fontSize: '16px', fontWeight: '500', color: 'var(--color-ink)' },
+  logoDot: { width: '32px', height: '32px', background: 'var(--t-topbar-text)', borderRadius: '8px', opacity: 0.95 },
+  logoText: { fontSize: '16px', fontWeight: '500', color: 'var(--t-topbar-text)' },
   logoTextWrap: { display: 'flex', flexDirection: 'column', lineHeight: 1.2 },
-  logoLine1: { fontSize: '11px', color: 'var(--color-ink-muted)', fontWeight: '500', letterSpacing: '-0.2px' },
-  logoLine2: { fontSize: '14px', color: 'var(--color-ink)', fontWeight: '600', letterSpacing: '-0.3px' },
-  adminBadge: { fontSize: '12px', color: 'var(--color-ink-subtle)', marginBottom: '32px', paddingLeft: '42px' },
+  logoLine1: { fontSize: '11px', color: 'var(--t-topbar-text)', opacity: 0.7, fontWeight: '500', letterSpacing: '-0.2px' },
+  logoLine2: { fontSize: '14px', color: 'var(--t-topbar-text)', fontWeight: '600', letterSpacing: '-0.3px' },
+  adminBadge: { fontSize: '12px', color: 'var(--t-topbar-text)', opacity: 0.6, marginBottom: '32px', paddingLeft: '42px' },
   nav: { display: 'flex', flexDirection: 'column', gap: '4px' },
-  navBtn: { width: '100%', textAlign: 'left', padding: '12px 14px', background: 'transparent', border: 'none', borderRadius: '8px', fontSize: '15px', color: 'var(--color-ink-muted)', cursor: 'pointer', fontFamily: 'var(--font-sans)' },
-  navBtnActive: { background: 'var(--color-canvas)', color: 'var(--color-ink)', fontWeight: '500' },
+  navBtn: { width: '100%', textAlign: 'left', padding: '12px 14px', background: 'transparent', border: 'none', borderRadius: 'var(--t-radius-button)', fontSize: '15px', color: 'var(--t-topbar-text)', opacity: 0.7, cursor: 'pointer', fontFamily: 'var(--font-sans)' },
+  navBtnActive: { background: 'var(--t-nav-active-bg)', color: 'var(--t-topbar-text)', opacity: 1, fontWeight: '500' },
   sideBottom: { padding: '24px', borderTop: '1px solid var(--color-hairline-soft)' },
   sideUser: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '14px' },
   avatar: { width: '38px', height: '38px', background: 'var(--color-ink)', color: '#fff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: '500', flexShrink: 0 },
@@ -635,13 +646,13 @@ const adS = {
   content: { padding: '48px 56px', maxWidth: '1360px', margin: '0 auto' },
   backBtn: { background: 'transparent', border: 'none', color: 'var(--color-ink-muted)', fontSize: '14px', cursor: 'pointer', padding: '0 0 24px', fontFamily: 'var(--font-sans)' },
   pageHeader: { display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '36px', gap: '24px' },
-  pageTitle: { fontSize: '32px', fontWeight: '500', color: 'var(--color-ink)', margin: '0', letterSpacing: '-0.6px' },
+  pageTitle: { fontSize: '32px', fontWeight: 'var(--t-display-weight)', color: 'var(--color-ink)', margin: '0', letterSpacing: 'var(--t-display-tracking)' },
   pageDate: { fontSize: '14px', color: 'var(--color-ink-subtle)' },
 
   statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '40px' },
-  statCard: { background: 'var(--color-surface-1)', border: '1px solid var(--color-hairline)', borderRadius: '14px', padding: '24px 28px' },
+  statCard: { background: 'var(--color-surface-1)', border: 'var(--t-card-border)', borderRadius: 'var(--t-radius-card)', padding: '24px 28px', boxShadow: 'var(--t-card-shadow)' },
   statLabel: { fontSize: '14px', color: 'var(--color-ink-subtle)', marginBottom: '12px' },
-  statValue: { fontSize: '36px', fontWeight: '500', letterSpacing: '-0.8px', color: 'var(--color-ink)', lineHeight: '1.1' },
+  statValue: { fontSize: '36px', fontWeight: 'var(--t-display-weight)', letterSpacing: 'var(--t-display-tracking)', color: 'var(--color-ink)', lineHeight: '1.1' },
   statSub: { fontSize: '13px', color: 'var(--color-ink-subtle)', marginTop: '8px' },
 
   section: { marginBottom: '40px' },
@@ -649,14 +660,14 @@ const adS = {
   sectionHint: { fontSize: '13px', fontWeight: '400', color: 'var(--color-ink-subtle)', marginLeft: '8px' },
 
   alertList: { display: 'flex', flexDirection: 'column', gap: '10px' },
-  alertItem: { display: 'flex', alignItems: 'center', gap: '14px', padding: '18px 22px', background: 'var(--color-surface-1)', border: '1px solid var(--color-hairline)', borderRadius: '12px' },
+  alertItem: { display: 'flex', alignItems: 'center', gap: '14px', padding: '18px 22px', background: 'var(--color-surface-1)', border: 'var(--t-card-border)', borderRadius: 'var(--t-radius-card)', boxShadow: 'var(--t-card-shadow)' },
   alertDot: color => ({ width: '10px', height: '10px', borderRadius: '50%', background: color, flexShrink: 0 }),
   alertMain: { fontSize: '15px', color: 'var(--color-ink)', marginBottom: '4px' },
   alertSub: { fontSize: '13px', color: 'var(--color-ink-subtle)' },
   alertArrow: { color: 'var(--color-ink-muted)', fontSize: '16px' },
 
   progressList: { display: 'flex', flexDirection: 'column', gap: '10px' },
-  progressItem: { display: 'flex', alignItems: 'center', gap: '20px', padding: '20px 24px', background: 'var(--color-surface-1)', border: '1px solid var(--color-hairline)', borderRadius: '12px', transition: 'border-color 0.15s' },
+  progressItem: { display: 'flex', alignItems: 'center', gap: '20px', padding: '20px 24px', background: 'var(--color-surface-1)', border: 'var(--t-card-border)', borderRadius: 'var(--t-radius-card)', transition: 'border-color 0.15s', boxShadow: 'var(--t-card-shadow)' },
   progressLeft: { display: 'flex', alignItems: 'center', gap: '14px', minWidth: '260px' },
   progressAvatar: { width: '40px', height: '40px', background: 'var(--color-surface-2)', color: 'var(--color-ink)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: '500', flexShrink: 0, border: '1px solid var(--color-hairline)' },
   progressName: { fontSize: '16px', fontWeight: '500', color: 'var(--color-ink)', marginBottom: '2px' },
@@ -672,10 +683,10 @@ const adS = {
 
   subTabRow: { display: 'flex', gap: '8px', marginBottom: '24px' },
   subTab: { padding: '9px 18px', border: '1px solid var(--color-hairline)', borderRadius: '999px', background: 'transparent', fontSize: '14px', color: 'var(--color-ink-muted)', cursor: 'pointer', fontFamily: 'var(--font-sans)' },
-  subTabActive: { background: 'var(--color-ink)', color: '#fff', border: '1px solid var(--color-ink)' },
+  subTabActive: { background: 'var(--t-button-bg)', color: 'var(--t-button-text)', border: '1px solid var(--t-button-bg)' },
 
   mentorList: { display: 'flex', flexDirection: 'column', gap: '12px' },
-  mentorCard: { background: 'var(--color-surface-1)', border: '1px solid var(--color-hairline)', borderRadius: '14px', overflow: 'hidden' },
+  mentorCard: { background: 'var(--color-surface-1)', border: 'var(--t-card-border)', borderRadius: 'var(--t-radius-card)', overflow: 'hidden', boxShadow: 'var(--t-card-shadow)' },
   mentorHeader: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 24px', cursor: 'pointer' },
   mentorLeft: { display: 'flex', alignItems: 'center', gap: '14px' },
   mentorName: { fontSize: '16px', fontWeight: '500', color: 'var(--color-ink)', marginBottom: '3px' },
@@ -684,7 +695,7 @@ const adS = {
   mentorRight: { display: 'flex', alignItems: 'center', gap: '10px' },
   badge: color => ({ fontSize: '12px', fontWeight: '500', padding: '4px 10px', borderRadius: '999px', background: color === 'green' ? '#dcfce7' : '#fef3c7', color: color === 'green' ? 'var(--color-semantic-success)' : '#92400e' }),
   metaChip: { fontSize: '13px', color: 'var(--color-ink-subtle)', background: 'var(--color-canvas)', padding: '4px 10px', borderRadius: '999px' },
-  approveBtn: { padding: '7px 16px', background: 'var(--color-ink)', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '13px', cursor: 'pointer', fontFamily: 'var(--font-sans)' },
+  approveBtn: { padding: '7px 16px', background: 'var(--t-button-bg)', color: 'var(--t-button-text)', border: 'none', borderRadius: 'var(--t-radius-button)', fontSize: '13px', fontWeight: '600', cursor: 'pointer', fontFamily: 'var(--font-sans)' },
   rejectBtn: { padding: '7px 16px', background: 'transparent', color: 'var(--color-semantic-error)', border: '1px solid var(--color-semantic-error)', borderRadius: '8px', fontSize: '13px', cursor: 'pointer', fontFamily: 'var(--font-sans)' },
 
   menteeSection: { borderTop: '1px solid var(--color-hairline-soft)', padding: '20px 24px', background: 'var(--color-canvas)' },
@@ -702,7 +713,7 @@ const adS = {
   addRow2: { display: 'flex', gap: '12px' },
   addInput: { padding: '9px 12px', border: '1px solid var(--color-hairline)', borderRadius: '8px', fontSize: '14px', fontFamily: 'var(--font-sans)', outline: 'none', width: '100%', boxSizing: 'border-box' },
   addBtnRow: { display: 'flex', gap: '8px' },
-  addConfirmBtn: { padding: '9px 18px', background: 'var(--color-ink)', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '14px', cursor: 'pointer', fontFamily: 'var(--font-sans)' },
+  addConfirmBtn: { padding: '9px 18px', background: 'var(--t-button-bg)', color: 'var(--t-button-text)', border: 'none', borderRadius: 'var(--t-radius-button)', fontSize: '14px', fontWeight: '600', cursor: 'pointer', fontFamily: 'var(--font-sans)' },
   addCancelBtn: { padding: '9px 14px', background: 'transparent', color: 'var(--color-ink-muted)', border: '1px solid var(--color-hairline)', borderRadius: '8px', fontSize: '14px', cursor: 'pointer', fontFamily: 'var(--font-sans)' },
   addMenteeBtn: { marginTop: '14px', padding: '9px 18px', background: 'transparent', color: 'var(--color-ink)', border: '1px dashed var(--color-hairline)', borderRadius: '8px', fontSize: '14px', cursor: 'pointer', fontFamily: 'var(--font-sans)' },
 
@@ -710,7 +721,7 @@ const adS = {
   filterSelect: { padding: '10px 14px', border: '1px solid var(--color-hairline)', borderRadius: '8px', fontSize: '14px', fontFamily: 'var(--font-sans)', background: '#fff', color: 'var(--color-ink)', cursor: 'pointer', outline: 'none' },
   reportSummary: { fontSize: '14px', color: 'var(--color-ink-muted)', marginBottom: '24px' },
 
-  reportMentorSection: { background: 'var(--color-surface-1)', border: '1px solid var(--color-hairline)', borderRadius: '14px', marginBottom: '16px', overflow: 'hidden' },
+  reportMentorSection: { background: 'var(--color-surface-1)', border: 'var(--t-card-border)', borderRadius: 'var(--t-radius-card)', marginBottom: '16px', overflow: 'hidden', boxShadow: 'var(--t-card-shadow)' },
   reportMentorHeader: { display: 'flex', alignItems: 'center', gap: '14px', padding: '20px 24px', borderBottom: '1px solid var(--color-hairline-soft)' },
   reportMentorName: { fontSize: '17px', fontWeight: '500', color: 'var(--color-ink)' },
   reportMentorCompany: { fontSize: '14px', color: 'var(--color-ink-muted)' },
@@ -781,7 +792,7 @@ const adS = {
   dlFile: { fontSize: '13px', color: 'var(--color-ink-muted)', marginBottom: '20px', wordBreak: 'break-all' },
   dlBar: { height: '6px', background: 'var(--color-surface-2)', borderRadius: '999px', overflow: 'hidden', marginBottom: '20px' },
   dlBarFill: { height: '100%', width: '70%', background: 'var(--color-report-blue)', borderRadius: '999px', animation: 'none' },
-  dlBtn: { padding: '10px 24px', background: 'var(--color-ink)', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '14px', cursor: 'pointer', fontFamily: 'var(--font-sans)' },
+  dlBtn: { padding: '10px 24px', background: 'var(--t-button-bg)', color: 'var(--t-button-text)', border: 'none', borderRadius: 'var(--t-radius-button)', fontSize: '14px', fontWeight: '600', cursor: 'pointer', fontFamily: 'var(--font-sans)' },
 };
 
 Object.assign(window, { AdminApp, stockPhoto, Lightbox, DownloadModal, PhotoTile });

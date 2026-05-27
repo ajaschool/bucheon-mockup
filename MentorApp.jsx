@@ -5,6 +5,16 @@ const Lightbox = window.Lightbox;
 const DownloadModal = window.DownloadModal;
 const PhotoTile = window.PhotoTile;
 
+const useTheme = window.useTheme || function () {
+  const [theme, setTheme] = React.useState(() => window.__theme || 'default');
+  React.useEffect(() => {
+    const onChange = (e) => setTheme(e.detail.theme);
+    window.addEventListener('themechange', onChange);
+    return () => window.removeEventListener('themechange', onChange);
+  }, []);
+  return theme;
+};
+
 /* ── Calendar ── */
 const MentoringCalendar = ({ schedules, year, month, onPrev, onNext, onDayClick, selectedDate }) => {
   const DAYS = ['월', '화', '수', '목', '금', '토', '일'];
@@ -301,6 +311,7 @@ const NextUpCard = ({ session, mentee, onClick }) => {
 
 /* ── Main Mentor App ── */
 const MentorApp = ({ user, onLogout }) => {
+  const theme = useTheme();
   const [db, setDb] = React.useState(window.DB.get());
   const refresh = () => setDb(window.DB.get());
 
@@ -515,49 +526,49 @@ const MentorApp = ({ user, onLogout }) => {
 /* ── Styles ── */
 const mtS = {
   layout: { minHeight: '100vh', background: 'var(--color-canvas)', display: 'flex', flexDirection: 'column' },
-  topbar: { background: 'var(--color-surface-1)', borderBottom: '1px solid var(--color-hairline)', padding: '0 40px', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 10 },
+  topbar: { background: 'var(--t-topbar-bg)', borderBottom: 'var(--t-topbar-border)', padding: '0 40px', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 10, boxShadow: 'var(--t-card-shadow)' },
   topLeft: { display: 'flex', alignItems: 'center', gap: '12px' },
-  logoDot: { width: '32px', height: '32px', background: 'var(--color-ink)', borderRadius: '7px' },
-  logoText: { fontSize: '16px', fontWeight: '500', color: 'var(--color-ink)' },
+  logoDot: { width: '32px', height: '32px', background: 'var(--t-topbar-text)', borderRadius: '7px', opacity: 0.95 },
+  logoText: { fontSize: '16px', fontWeight: '500', color: 'var(--t-topbar-text)' },
   logoTextWrap: { display: 'flex', flexDirection: 'column', lineHeight: 1.15 },
-  logoLine1: { fontSize: '11px', color: 'var(--color-ink-muted)', fontWeight: '500', letterSpacing: '-0.2px' },
-  logoLine2: { fontSize: '14px', color: 'var(--color-ink)', fontWeight: '600', letterSpacing: '-0.3px' },
+  logoLine1: { fontSize: '11px', color: 'var(--t-topbar-text)', opacity: 0.7, fontWeight: '500', letterSpacing: '-0.2px' },
+  logoLine2: { fontSize: '14px', color: 'var(--t-topbar-text)', fontWeight: '600', letterSpacing: '-0.3px' },
   topRight: { display: 'flex', alignItems: 'center', gap: '20px' },
   topUserInfo: { display: 'flex', flexDirection: 'column', alignItems: 'flex-end' },
-  topUserName: { fontSize: '14px', fontWeight: '500', color: 'var(--color-ink)' },
-  topUserCompany: { fontSize: '12px', color: 'var(--color-ink-subtle)' },
-  topLogout: { padding: '8px 16px', background: 'transparent', border: '1px solid var(--color-hairline)', borderRadius: '8px', fontSize: '13px', color: 'var(--color-ink-muted)', cursor: 'pointer', fontFamily: 'var(--font-sans)' },
+  topUserName: { fontSize: '14px', fontWeight: '500', color: 'var(--t-topbar-text)' },
+  topUserCompany: { fontSize: '12px', color: 'var(--t-topbar-text)', opacity: 0.7 },
+  topLogout: { padding: '8px 16px', background: 'transparent', border: '1px solid currentColor', borderRadius: 'var(--t-radius-button)', fontSize: '13px', color: 'var(--t-topbar-text)', opacity: 0.85, cursor: 'pointer', fontFamily: 'var(--font-sans)' },
 
   body: { display: 'flex', flexDirection: 'column', gap: '24px', padding: '36px 48px', flex: 1, maxWidth: '1320px', margin: '0 auto', width: '100%', boxSizing: 'border-box' },
 
   /* Hero */
-  hero: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '32px', padding: '28px 32px', background: 'var(--color-surface-1)', border: '1px solid var(--color-hairline)', borderRadius: '16px' },
+  hero: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '32px', padding: '28px 32px', background: 'var(--color-surface-1)', border: 'var(--t-card-border)', borderRadius: 'var(--t-radius-card-lg)', boxShadow: 'var(--t-card-shadow)' },
   heroLeft: { flex: '1 1 auto' },
-  heroGreeting: { fontSize: '22px', fontWeight: '400', color: 'var(--color-ink)', letterSpacing: '-0.4px' },
+  heroGreeting: { fontSize: '24px', fontWeight: 'var(--t-display-weight)', color: 'var(--color-ink)', letterSpacing: 'var(--t-display-tracking)' },
   heroSub: { fontSize: '14px', color: 'var(--color-ink-subtle)', marginTop: '6px' },
   heroStats: { display: 'flex', alignItems: 'center', gap: '36px' },
   heroStatItem: { textAlign: 'right', minWidth: '60px' },
-  heroStatNum: { fontSize: '36px', fontWeight: '500', letterSpacing: '-0.6px', lineHeight: 1 },
+  heroStatNum: { fontSize: '36px', fontWeight: 'var(--t-display-weight)', letterSpacing: 'var(--t-display-tracking)', lineHeight: 1 },
   heroStatLabel: { fontSize: '12px', color: 'var(--color-ink-subtle)', marginTop: '6px' },
 
   /* Next Up Card — white surface, subtle hierarchy through typography */
-  nextUpCard: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '24px', padding: '28px 32px', background: 'var(--color-surface-1)', border: '1px solid var(--color-hairline)', borderRadius: '16px', cursor: 'pointer' },
+  nextUpCard: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '24px', padding: '28px 32px', background: 'var(--color-surface-1)', border: 'var(--t-card-border)', borderRadius: 'var(--t-radius-card-lg)', cursor: 'pointer', boxShadow: 'var(--t-card-shadow)' },
   nextUpLeft: { flex: 1 },
   nextUpEyebrow: { fontSize: '12px', letterSpacing: '0.5px', color: 'var(--color-ink-subtle)', marginBottom: '10px', fontWeight: '500', textTransform: 'uppercase' },
-  nextUpMentee: { fontSize: '28px', fontWeight: '500', letterSpacing: '-0.5px', marginBottom: '6px', color: 'var(--color-ink)' },
+  nextUpMentee: { fontSize: '28px', fontWeight: 'var(--t-display-weight)', letterSpacing: 'var(--t-display-tracking)', marginBottom: '6px', color: 'var(--color-ink)' },
   nextUpDate: { fontSize: '14px', color: 'var(--color-ink-muted)' },
   nextUpMeta: { fontSize: '13px', color: 'var(--color-ink-subtle)', marginTop: '8px' },
   nextUpRight: { display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '14px' },
-  nextUpDday: { fontSize: '36px', fontWeight: '500', letterSpacing: '-0.8px', color: 'var(--color-ink)', lineHeight: 1 },
-  nextUpBtn: { padding: '10px 20px', background: 'var(--color-ink)', border: 'none', borderRadius: '8px', color: '#fff', fontSize: '13px', cursor: 'pointer', fontFamily: 'var(--font-sans)', fontWeight: '500' },
+  nextUpDday: { fontSize: '36px', fontWeight: 'var(--t-display-weight)', letterSpacing: 'var(--t-display-tracking)', color: 'var(--color-ink)', lineHeight: 1 },
+  nextUpBtn: { padding: '10px 20px', background: 'var(--t-button-bg)', border: 'none', borderRadius: 'var(--t-radius-button)', color: 'var(--t-button-text)', fontSize: '13px', cursor: 'pointer', fontFamily: 'var(--font-sans)', fontWeight: '600' },
 
   /* Main grid */
   mainGrid: { display: 'grid', gridTemplateColumns: '380px 1fr', gap: '24px', alignItems: 'flex-start' },
   leftCol: { display: 'flex', flexDirection: 'column', gap: '20px' },
-  rightCol: { background: 'var(--color-surface-1)', border: '1px solid var(--color-hairline)', borderRadius: '14px', overflow: 'hidden' },
+  rightCol: { background: 'var(--color-surface-1)', border: 'var(--t-card-border)', borderRadius: 'var(--t-radius-card)', overflow: 'hidden', boxShadow: 'var(--t-card-shadow)' },
 
   /* Calendar */
-  calWrap: { background: 'var(--color-surface-1)', border: '1px solid var(--color-hairline)', borderRadius: '14px', padding: '22px' },
+  calWrap: { background: 'var(--color-surface-1)', border: 'var(--t-card-border)', borderRadius: 'var(--t-radius-card)', padding: '22px', boxShadow: 'var(--t-card-shadow)' },
   calHeader: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' },
   calTitle: { fontSize: '16px', fontWeight: '500', color: 'var(--color-ink)' },
   calNavBtn: { background: 'none', border: 'none', fontSize: '24px', color: 'var(--color-ink-muted)', cursor: 'pointer', padding: '0 6px', lineHeight: 1, fontFamily: 'var(--font-sans)' },
@@ -575,7 +586,7 @@ const mtS = {
   legendHint: { fontSize: '11px', color: 'var(--color-ink-tertiary)', flex: '1 1 100%', textAlign: 'right', marginTop: '4px' },
 
   /* Monthly schedule */
-  monthCard: { background: 'var(--color-surface-1)', border: '1px solid var(--color-hairline)', borderRadius: '14px', overflow: 'hidden' },
+  monthCard: { background: 'var(--color-surface-1)', border: 'var(--t-card-border)', borderRadius: 'var(--t-radius-card)', overflow: 'hidden', boxShadow: 'var(--t-card-shadow)' },
   monthCardHeader: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', borderBottom: '1px solid var(--color-hairline-soft)' },
   monthCardTitle: { fontSize: '14px', fontWeight: '500', color: 'var(--color-ink)' },
   monthCardCount: { fontSize: '12px', color: 'var(--color-ink-subtle)', background: 'var(--color-canvas)', padding: '3px 10px', borderRadius: '999px' },
@@ -597,14 +608,14 @@ const mtS = {
 
   /* Card grid for sessions */
   cardGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '14px' },
-  gridCard: { display: 'flex', flexDirection: 'column', gap: '6px', padding: '18px 20px', background: 'var(--color-canvas)', border: '1px solid var(--color-hairline-soft)', borderRadius: '12px', cursor: 'pointer', transition: 'box-shadow 0.15s, transform 0.1s' },
+  gridCard: { display: 'flex', flexDirection: 'column', gap: '6px', padding: '18px 20px', background: 'var(--color-surface-1)', border: 'var(--t-card-border)', borderRadius: 'var(--t-radius-card)', cursor: 'pointer', transition: 'box-shadow 0.15s, transform 0.1s', boxShadow: 'var(--t-card-shadow)' },
   gridCardHi: { background: 'var(--color-surface-2)', boxShadow: 'inset 3px 0 0 var(--color-ink)' },
   gridCardTop: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' },
   gridCardDate: { fontSize: '12px', color: 'var(--color-ink-subtle)' },
   gridCardMentee: { fontSize: '17px', fontWeight: '500', color: 'var(--color-ink)', marginBottom: '2px', letterSpacing: '-0.2px' },
   gridCardContact: { fontSize: '12px', color: 'var(--color-ink-subtle)' },
   gridCardFile: { fontSize: '12px', color: 'var(--color-ink-subtle)', marginTop: '8px', paddingTop: '10px', borderTop: '1px solid var(--color-hairline-soft)' },
-  gridCardBtn: { marginTop: '12px', padding: '9px 14px', background: 'var(--color-ink)', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '13px', cursor: 'pointer', fontFamily: 'var(--font-sans)' },
+  gridCardBtn: { marginTop: '12px', padding: '9px 14px', background: 'var(--t-button-bg)', color: 'var(--t-button-text)', border: 'none', borderRadius: 'var(--t-radius-button)', fontSize: '13px', fontWeight: '600', cursor: 'pointer', fontFamily: 'var(--font-sans)' },
   dday: diffDays => ({ fontSize: '13px', fontWeight: '600', color: diffDays < 0 ? 'var(--color-ink-subtle)' : diffDays === 0 ? 'var(--color-fin-orange)' : 'var(--color-report-blue)', background: diffDays < 0 ? 'var(--color-surface-2)' : diffDays === 0 ? '#fff5eb' : '#eff6ff', padding: '3px 10px', borderRadius: '999px' }),
   schedStatusBadge: status => ({ fontSize: '11px', fontWeight: '500', padding: '3px 10px', borderRadius: '999px', background: status === 'completed' ? '#dcfce7' : '#dbeafe', color: status === 'completed' ? 'var(--color-semantic-success)' : 'var(--color-report-blue)', whiteSpace: 'nowrap' }),
 
@@ -618,7 +629,7 @@ const mtS = {
   addSchedBtn: { fontSize: '13px', padding: '7px 14px', background: 'transparent', border: '1px solid var(--color-hairline)', borderRadius: '8px', cursor: 'pointer', fontFamily: 'var(--font-sans)', color: 'var(--color-ink)', whiteSpace: 'nowrap' },
   addDateRow: { display: 'flex', gap: '10px', padding: '14px 22px', background: '#eff6ff', borderBottom: '1px solid var(--color-hairline-soft)' },
   dateInput: { flex: 1, padding: '9px 12px', border: '1px solid var(--color-hairline)', borderRadius: '8px', fontSize: '14px', fontFamily: 'var(--font-sans)', outline: 'none' },
-  addConfirmBtn: { padding: '9px 16px', background: 'var(--color-ink)', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '13px', cursor: 'pointer', fontFamily: 'var(--font-sans)', whiteSpace: 'nowrap' },
+  addConfirmBtn: { padding: '9px 16px', background: 'var(--t-button-bg)', color: 'var(--t-button-text)', border: 'none', borderRadius: 'var(--t-radius-button)', fontSize: '13px', fontWeight: '600', cursor: 'pointer', fontFamily: 'var(--font-sans)', whiteSpace: 'nowrap' },
   noSchedMsg: { padding: '16px 22px', fontSize: '14px', color: 'var(--color-ink-subtle)', fontStyle: 'italic' },
   schedList: { padding: '4px 0' },
   schedRow: { display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 22px', borderTop: '1px solid var(--color-hairline-soft)' },
@@ -632,7 +643,7 @@ const mtS = {
   backBtn: { background: 'transparent', border: 'none', color: 'var(--color-ink-muted)', fontSize: '14px', cursor: 'pointer', padding: '0 0 20px', fontFamily: 'var(--font-sans)' },
   sessionPageHeader: { display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '36px', gap: '20px' },
   sessionPageEyebrow: { fontSize: '14px', color: 'var(--color-ink-subtle)', marginBottom: '6px' },
-  sessionPageTitle: { fontSize: '32px', fontWeight: '500', color: 'var(--color-ink)', margin: '0', letterSpacing: '-0.6px' },
+  sessionPageTitle: { fontSize: '32px', fontWeight: 'var(--t-display-weight)', color: 'var(--color-ink)', margin: '0', letterSpacing: 'var(--t-display-tracking)' },
   sessionPageMeta: { fontSize: '14px', color: 'var(--color-ink-subtle)', marginTop: '8px' },
   statusBadge: done => ({ display: 'inline-flex', padding: '6px 14px', borderRadius: '999px', fontSize: '13px', fontWeight: '500', background: done ? '#dcfce7' : '#dbeafe', color: done ? 'var(--color-semantic-success)' : 'var(--color-report-blue)', whiteSpace: 'nowrap' }),
   section: { marginBottom: '32px' },
@@ -647,7 +658,7 @@ const mtS = {
   fileChipLg: { display: 'inline-flex', alignItems: 'center', gap: '10px', fontSize: '15px', color: 'var(--color-report-blue)', background: '#eff6ff', padding: '14px 22px', borderRadius: '10px', border: '1px solid #c7d2fe', cursor: 'pointer', fontFamily: 'var(--font-sans)', fontWeight: '500' },
   fileChipHint: { fontSize: '12px', color: 'var(--color-ink-muted)', marginLeft: '6px', fontWeight: '400' },
   photoGridLg: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '14px' },
-  submitBtn: { width: '100%', padding: '14px', background: 'var(--color-ink)', color: '#fff', border: 'none', borderRadius: '10px', fontSize: '16px', fontWeight: '500', cursor: 'pointer', fontFamily: 'var(--font-sans)', marginTop: '20px' },
+  submitBtn: { width: '100%', padding: '14px', background: 'var(--t-button-bg)', color: 'var(--t-button-text)', border: 'none', borderRadius: 'var(--t-radius-button)', fontSize: '16px', fontWeight: '600', cursor: 'pointer', fontFamily: 'var(--font-sans)', marginTop: '20px' },
 };
 
 Object.assign(window, { MentorApp });

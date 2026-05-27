@@ -148,9 +148,9 @@ const PendingPage = ({ user, onLogout }) => (
 
 const authS = {
   page: { minHeight: '100vh', background: 'var(--color-canvas)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' },
-  card: { background: 'var(--color-surface-1)', border: '1px solid var(--color-hairline)', borderRadius: '16px', padding: '48px', width: '100%', maxWidth: '420px' },
+  card: { background: 'var(--color-surface-1)', border: 'var(--t-card-border)', borderRadius: 'var(--t-radius-card-lg)', padding: '48px', width: '100%', maxWidth: '420px', boxShadow: 'var(--t-card-shadow-lifted)' },
   brandRow: { display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '36px' },
-  brandDot: { width: '30px', height: '30px', background: 'var(--color-ink)', borderRadius: '8px' },
+  brandDot: { width: '30px', height: '30px', background: 'var(--t-button-bg)', borderRadius: 'var(--t-radius-button)' },
   brandName: { fontSize: '15px', fontWeight: '500', color: 'var(--color-ink)' },
   title: { fontSize: '24px', fontWeight: '500', color: 'var(--color-ink)', margin: '0 0 8px', letterSpacing: '-0.4px' },
   sub: { fontSize: '14px', color: 'var(--color-ink-muted)', margin: '0 0 28px', lineHeight: '1.6' },
@@ -159,8 +159,8 @@ const authS = {
   row2: { display: 'flex', gap: '12px' },
   label: { fontSize: '13px', fontWeight: '500', color: 'var(--color-ink)' },
   input: { padding: '10px 12px', border: '1px solid var(--color-hairline)', borderRadius: '8px', fontSize: '14px', color: 'var(--color-ink)', background: '#fff', outline: 'none', fontFamily: 'var(--font-sans)', width: '100%', boxSizing: 'border-box' },
-  btnPrimary: { padding: '12px', background: 'var(--color-ink)', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '15px', fontWeight: '500', cursor: 'pointer', fontFamily: 'var(--font-sans)', marginTop: '4px' },
-  btnSecondary: { padding: '12px 24px', background: 'transparent', color: 'var(--color-ink)', border: '1px solid var(--color-hairline)', borderRadius: '8px', fontSize: '15px', fontWeight: '500', cursor: 'pointer', fontFamily: 'var(--font-sans)' },
+  btnPrimary: { padding: '12px', background: 'var(--t-button-bg)', color: 'var(--t-button-text)', border: 'none', borderRadius: 'var(--t-radius-button)', fontSize: '15px', fontWeight: '600', cursor: 'pointer', fontFamily: 'var(--font-sans)', marginTop: '4px' },
+  btnSecondary: { padding: '12px 24px', background: 'transparent', color: 'var(--color-ink)', border: '1px solid var(--color-hairline)', borderRadius: 'var(--t-radius-button)', fontSize: '15px', fontWeight: '500', cursor: 'pointer', fontFamily: 'var(--font-sans)' },
   errorMsg: { fontSize: '13px', color: 'var(--color-semantic-error)', margin: '0' },
   divider: { height: '1px', background: 'var(--color-hairline-soft)', margin: '24px 0' },
   footerRow: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' },
