@@ -34,10 +34,10 @@ const OVERVIEW_PURPOSE = [
 const BusinessOverview = () => (
   <div style={boS.wrap}>
     <div style={boS.header}>
-      <div style={boS.eyebrow}>2026 부천 문화콘텐츠 성장지원 플랫폼</div>
       <h2 style={boS.title}>사업 개요</h2>
       <p style={boS.lead}>
-        부천시 콘텐츠 기업의 Scale-Up을 목표로 기업 진단 → 멘토링 → 투자 연계 → 성과관리까지
+        부천시 콘텐츠 기업의 <strong style={boS.leadStrong}>Scale-Up</strong>을 목표로{' '}
+        <strong style={boS.leadStrong}>기업 진단 → 멘토링 → 투자 연계 → 성과관리</strong>까지
         통합 지원하는 성장지원 플랫폼
       </p>
     </div>
@@ -97,10 +97,10 @@ const BusinessOverview = () => (
 
 const boS = {
   wrap: { display: 'flex', flexDirection: 'column', gap: '36px' },
-  header: { maxWidth: '760px' },
-  eyebrow: { fontSize: '12px', fontWeight: '600', letterSpacing: '0.6px', textTransform: 'uppercase', color: 'var(--color-ink-subtle)', marginBottom: '10px' },
+  header: {},
   title: { fontSize: '32px', fontWeight: 'var(--t-display-weight)', letterSpacing: 'var(--t-display-tracking)', color: 'var(--color-ink)', margin: 0 },
-  lead: { fontSize: '15px', lineHeight: 1.7, color: 'var(--color-ink-muted)', marginTop: '14px' },
+  lead: { fontSize: '17px', lineHeight: 1.75, color: 'var(--color-ink-muted)', marginTop: '10px', wordBreak: 'keep-all' },
+  leadStrong: { color: 'var(--color-ink)', fontWeight: '600' },
 
   topGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' },
   card: { background: 'var(--color-surface-1)', border: 'var(--t-card-border)', borderRadius: 'var(--t-radius-card)', padding: '26px 28px', boxShadow: 'var(--t-card-shadow)' },
@@ -402,7 +402,7 @@ const AdminDashboard = ({ db, refresh, onTab, onMentorClick }) => {
         <StatCard label="전체 일정" value={`${db.schedules.length}건`} sub={`완료 ${completed.length}건 · 예정 ${db.schedules.length - completed.length}건`} />
         <StatCard
           primary
-          label="전체 완료율"
+          label="전체 진행률"
           value={`${rate}%`}
           accent={rate >= 50 ? 'var(--color-status-done)' : 'var(--color-accent)'}
           sub={`${completed.length} / ${db.schedules.length}건`}
@@ -649,7 +649,7 @@ const MentorManagement = ({ db, refresh }) => {
 
               {m.approved && (
                 <div style={adS.mentorProgressStrip}>
-                  <span style={adS.mentorProgressCaption}>진척률</span>
+                  <span style={adS.mentorProgressCaption}>진행률</span>
                   <div style={adS.mentorProgressBarWrap}>
                     <div style={{ ...adS.mentorProgressBarFill, width: schedPct + '%', background: scheds.length === 0 ? 'var(--color-hairline)' : schedPct === 100 ? 'var(--color-semantic-success)' : 'var(--color-report-blue)' }}></div>
                   </div>
@@ -955,7 +955,7 @@ const MenteeManagement = ({ db, onMentorClick }) => {
                 </div>
               </div>
               <div style={adS.mentorProgressStrip}>
-                <span style={adS.mentorProgressCaption}>진척률</span>
+                <span style={adS.mentorProgressCaption}>진행률</span>
                 <div style={adS.mentorProgressBarWrap}>
                   <div style={{ ...adS.mentorProgressBarFill, width: pct + '%', background: scheds.length === 0 ? 'var(--color-hairline)' : pct === 100 ? 'var(--color-semantic-success)' : 'var(--color-report-blue)' }}></div>
                 </div>

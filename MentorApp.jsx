@@ -444,6 +444,9 @@ const MentorApp = ({ user, onLogout }) => {
       <div style={mtS.layout}>
         <Topbar />
         <div style={mtS.body}>
+          <div style={mtS.bannerWrap}>
+            <img src="bucheon_banner.png" alt="2026 부천 문화콘텐츠 성장지원 플랫폼" style={mtS.bannerImg} />
+          </div>
           <BusinessOverview />
         </div>
       </div>
