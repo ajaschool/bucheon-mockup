@@ -6,6 +6,7 @@ const Lightbox = window.Lightbox;
 const DownloadModal = window.DownloadModal;
 const PhotoTile = window.PhotoTile;
 const ConfirmModal = window.ConfirmModal;
+const BusinessOverview = window.BusinessOverview;
 
 const useTheme = window.useTheme || function () {
   const [theme, setTheme] = React.useState(() => window.__theme || 'default');
@@ -118,7 +119,7 @@ const SessionPage = ({ session, mentee, onBack, refresh }) => {
         <div>
           <div style={mtS.sessionPageEyebrow}>{mentee?.name}</div>
           <h2 style={mtS.sessionPageTitle}>{session.date.replace(/-/g, '. ')} 멘토링</h2>
-          {mentee?.contactName && <div style={mtS.sessionPageMeta}>담당: {mentee.contactName} · {mentee.contactPhone}</div>}
+          {mentee?.contactName && <div style={mtS.sessionPageMeta}>담당: {mentee.contactName}{mentee.contactPosition ? ` ${mentee.contactPosition}` : ''} · {mentee.contactPhone}</div>}
         </div>
         <span style={mtS.statusBadge(isCompleted)}>
           {isCompleted && <Icon name="check" size={13} color="var(--color-status-done)" strokeWidth={2.5} style={{ marginRight: '4px' }} />}
@@ -202,7 +203,7 @@ const MenteeTab = ({ db, user, onSessionClick, refresh }) => {
   const [deletingSched, setDeletingSched] = React.useState(null); // {id, date, menteeName}
   const mentees = db.mentees.filter(m => m.mentorId === user.id);
 
-  if (mentees.length === 0) return <div style={mtS.emptyState}>배정된 멘티가 없습니다.<br />관리자에게 문의하세요.</div>;
+  if (mentees.length === 0) return <div style={mtS.emptyState}>배정된 참여기업이 없습니다.<br />관리자에게 문의하세요.</div>;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
@@ -216,7 +217,7 @@ const MenteeTab = ({ db, user, onSessionClick, refresh }) => {
               <div style={{ flex: 1 }}>
                 <div style={mtS.menteeCardName}>{mt.name}</div>
                 <div style={mtS.menteeCardContact}>
-                  {mt.contactName && <span>담당: {mt.contactName}</span>}
+                  {mt.contactName && <span>담당: {mt.contactName}{mt.contactPosition ? ` ${mt.contactPosition}` : ''}</span>}
                   {mt.contactPhone && <span> · {mt.contactPhone}</span>}
                 </div>
               </div>
@@ -331,7 +332,7 @@ const NextUpCard = ({ session, mentee, onClick }) => {
         <div style={mtS.nextUpEyebrow}>다음 예정 멘토링</div>
         <div style={mtS.nextUpMentee}>{mentee?.name}</div>
         <div style={mtS.nextUpDate}>{session.date.replace(/-/g, '. ')}</div>
-        {mentee?.contactName && <div style={mtS.nextUpMeta}>담당: {mentee.contactName} · {mentee.contactPhone}</div>}
+        {mentee?.contactName && <div style={mtS.nextUpMeta}>담당: {mentee.contactName}{mentee.contactPosition ? ` ${mentee.contactPosition}` : ''} · {mentee.contactPhone}</div>}
       </div>
       <div style={mtS.nextUpRight}>
         <div style={{ ...mtS.nextUpDday, color: accent }}>{dDayText}</div>
@@ -355,6 +356,7 @@ const MentorApp = ({ user, onLogout }) => {
   const [selectedDate, setSelectedDate] = React.useState(null);
   const [activeTab, setActiveTab] = React.useState('upcoming');
   const [selectedSession, setSelectedSession] = React.useState(null);
+  const [view, setView] = React.useState('home'); // 'home' | 'overview'
 
   const openSession = React.useCallback((s) => {
     setSelectedSession(s);
@@ -393,7 +395,7 @@ const MentorApp = ({ user, onLogout }) => {
   const tabs = [
     { id: 'upcoming', label: `예정 (${upcoming.length})` },
     { id: 'completed', label: `완료 (${completed.length})` },
-    { id: 'mentees', label: `내 멘티 (${mentees.length})` },
+    { id: 'mentees', label: `내 참여기업 (${mentees.length})` },
   ];
 
   const Topbar = () => (
@@ -404,6 +406,12 @@ const MentorApp = ({ user, onLogout }) => {
           <span style={mtS.logoLine1}>2026 부천문화콘텐츠</span>
           <span style={mtS.logoLine2}>성장지원플랫폼</span>
         </div>
+        <nav style={mtS.topNav}>
+          <button onClick={() => setView('home')}
+            style={{ ...mtS.topNavBtn, ...(view === 'home' ? mtS.topNavBtnActive : {}) }}>홈</button>
+          <button onClick={() => setView('overview')}
+            style={{ ...mtS.topNavBtn, ...(view === 'overview' ? mtS.topNavBtnActive : {}) }}>사업개요</button>
+        </nav>
       </div>
       <div style={mtS.topRight}>
         <div style={mtS.topUserInfo}>
@@ -431,20 +439,34 @@ const MentorApp = ({ user, onLogout }) => {
     );
   }
 
+  if (view === 'overview') {
+    return (
+      <div style={mtS.layout}>
+        <Topbar />
+        <div style={mtS.body}>
+          <BusinessOverview />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={mtS.layout}>
       <Topbar />
 
       <div style={mtS.body}>
+        <div style={mtS.bannerWrap}>
+          <img src="bucheon_banner.png" alt="2026 부천 문화콘텐츠 성장지원 플랫폼" style={mtS.bannerImg} />
+        </div>
         {/* ── Hero ── */}
         <div style={mtS.hero}>
           <div style={mtS.heroLeft}>
-            <div style={mtS.heroGreeting}>안녕하세요, <strong>{user.name}</strong> 멘토님</div>
+            <div style={mtS.heroGreeting}>안녕하세요, <strong>{user.name}</strong> 전문가님</div>
             <div style={mtS.heroSub}>{user.company} · {new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' })}</div>
           </div>
           <div style={mtS.heroStats}>
             {[
-              { num: mentees.length, label: '배정 멘티', color: 'var(--color-ink)' },
+              { num: mentees.length, label: '배정 참여기업', color: 'var(--color-ink)' },
               { num: allSchedules.length, label: '전체 멘토링', color: 'var(--color-ink)' },
               { num: upcoming.length, label: '예정', color: 'var(--color-report-blue)' },
               { num: completed.length, label: '완료', color: 'var(--color-semantic-success)' },
@@ -499,7 +521,7 @@ const MentorApp = ({ user, onLogout }) => {
             <div style={mtS.tabContent}>
               {activeTab === 'upcoming' && (
                 upcoming.length === 0
-                  ? <div style={mtS.emptyState}>{'예정된 멘토링이 없습니다.\n내 멘티 탭에서 날짜를 추가하세요.'}</div>
+                  ? <div style={mtS.emptyState}>{'예정된 멘토링이 없습니다.\n내 참여기업 탭에서 날짜를 추가하세요.'}</div>
                   : <div style={mtS.cardGrid}>
                     {upcoming.map(s => {
                       const mt = getMentee(s.menteeId);
@@ -516,7 +538,7 @@ const MentorApp = ({ user, onLogout }) => {
                             </span>
                           </div>
                           <div style={mtS.gridCardMentee}>{mt?.name}</div>
-                          {mt?.contactName && <div style={mtS.gridCardContact}>담당 {mt.contactName} · {mt.contactPhone}</div>}
+                          {mt?.contactName && <div style={mtS.gridCardContact}>담당 {mt.contactName}{mt.contactPosition ? ` ${mt.contactPosition}` : ''} · {mt.contactPhone}</div>}
                           <button style={mtS.gridCardBtn} onClick={(e) => { e.stopPropagation(); openSession(s); }}>보고서 업로드</button>
                         </div>
                       );
@@ -540,7 +562,7 @@ const MentorApp = ({ user, onLogout }) => {
                             <span style={mtS.schedStatusBadge('completed')}>완료</span>
                           </div>
                           <div style={mtS.gridCardMentee}>{mt?.name}</div>
-                          {mt?.contactName && <div style={mtS.gridCardContact}>담당 {mt.contactName} · {mt.contactPhone}</div>}
+                          {mt?.contactName && <div style={mtS.gridCardContact}>담당 {mt.contactName}{mt.contactPosition ? ` ${mt.contactPosition}` : ''} · {mt.contactPhone}</div>}
                           <div style={mtS.gridCardFile}>
                             <Icon name="file-text" size={13} color="var(--color-ink-muted)" />
                             <span>{s.reportFilename}</span>
@@ -570,6 +592,9 @@ const mtS = {
   layout: { minHeight: '100vh', background: 'var(--color-canvas)', display: 'flex', flexDirection: 'column' },
   topbar: { background: 'var(--t-topbar-bg)', borderBottom: 'var(--t-topbar-border)', padding: '0 40px', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 10, boxShadow: 'var(--t-card-shadow)' },
   topLeft: { display: 'flex', alignItems: 'center', gap: '12px' },
+  topNav: { display: 'flex', gap: '4px', marginLeft: '24px' },
+  topNavBtn: { padding: '8px 16px', background: 'transparent', border: 'none', borderRadius: 'var(--t-radius-button)', fontSize: '14px', color: 'var(--t-topbar-text)', opacity: 0.65, cursor: 'pointer', fontFamily: 'var(--font-sans)' },
+  topNavBtnActive: { background: 'var(--t-nav-active-bg, rgba(255,255,255,0.12))', opacity: 1, fontWeight: '500' },
   logoDot: { width: '32px', height: '32px', background: 'var(--t-topbar-text)', borderRadius: '7px', opacity: 0.95 },
   logoText: { fontSize: '16px', fontWeight: '500', color: 'var(--t-topbar-text)' },
   logoTextWrap: { display: 'flex', flexDirection: 'column', lineHeight: 1.15 },
@@ -582,6 +607,8 @@ const mtS = {
   topLogout: { padding: '8px 16px', background: 'transparent', border: '1px solid currentColor', borderRadius: 'var(--t-radius-button)', fontSize: '13px', color: 'var(--t-topbar-text)', opacity: 0.85, cursor: 'pointer', fontFamily: 'var(--font-sans)' },
 
   body: { display: 'flex', flexDirection: 'column', gap: '24px', padding: '36px 48px', flex: 1, maxWidth: '1320px', margin: '0 auto', width: '100%', boxSizing: 'border-box' },
+  bannerWrap: { width: '100%' },
+  bannerImg: { display: 'block', width: '100%', height: 'auto', borderRadius: '16px', boxShadow: 'var(--t-card-shadow)' },
 
   /* Hero */
   hero: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '32px', padding: '28px 32px', background: 'var(--color-surface-1)', border: 'var(--t-card-border)', borderRadius: 'var(--t-radius-card-lg)', boxShadow: 'var(--t-card-shadow)' },

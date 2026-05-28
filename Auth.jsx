@@ -40,13 +40,13 @@ const LoginPage = ({ onLogin, onSignup }) => {
         </form>
         <div style={authS.divider}></div>
         <div style={authS.footerRow}>
-          <span style={authS.footerText}>멘토로 참여하시나요?</span>
+          <span style={authS.footerText}>전문가(멘토)로 참여하시나요?</span>
           <button onClick={onSignup} style={authS.linkBtn}>회원가입 신청</button>
         </div>
         <div style={authS.hint}>
           <p style={authS.hintTitle}>테스트 계정</p>
           <p style={authS.hintRow}>관리자: admin@bucheon.kr / admin123</p>
-          <p style={authS.hintRow}>멘토: mentor1@test.com / mentor123</p>
+          <p style={authS.hintRow}>전문가: mentor1@test.com / mentor123</p>
           <p style={authS.hintRow}>대기: mentor4@test.com / mentor123</p>
         </div>
       </div>
@@ -77,7 +77,7 @@ const SignupPage = ({ onBack }) => {
         <div style={authS.successCircle}><Icon name="check" size={28} color="#fff" strokeWidth={2.5} /></div>
         <h1 style={{ ...authS.title, textAlign: 'center' }}>신청 완료</h1>
         <p style={{ ...authS.sub, textAlign: 'center' }}>
-          멘토 등록 신청이 접수되었습니다.<br />관리자 승인 후 로그인하실 수 있습니다.
+          전문가(멘토) 등록 신청이 접수되었습니다.<br />관리자 승인 후 로그인하실 수 있습니다.
         </p>
         <button onClick={onBack} style={authS.btnPrimary}>로그인 화면으로</button>
       </div>
@@ -90,8 +90,8 @@ const SignupPage = ({ onBack }) => {
         <button onClick={onBack} style={authS.backBtn}>
           <Icon name="arrow-left" size={14} style={{ marginRight: '4px' }} />뒤로
         </button>
-        <h1 style={authS.title}>멘토 회원가입</h1>
-        <p style={authS.sub}>아래 정보를 입력해 멘토 등록을 신청하세요</p>
+        <h1 style={authS.title}>전문가(멘토) 회원가입</h1>
+        <p style={authS.sub}>아래 정보를 입력해 전문가 등록을 신청하세요</p>
         <form onSubmit={handleSubmit} style={authS.form}>
           <div style={authS.row2}>
             <div style={authS.field}>

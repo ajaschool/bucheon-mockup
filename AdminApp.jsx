@@ -12,6 +12,124 @@ function useTheme() {
   return theme;
 }
 
+/* ── 사업 개요 (관리자·전문가 공용) ── */
+const OVERVIEW_STEPS = [
+  { no: 'STEP 1', title: '기업 모집·선발', items: ['콘텐츠 기업 모집', '서류/발표 평가', '최종 참여기업 선정'] },
+  { no: 'STEP 2', title: '콘텐츠 개발지원', items: ['기업별 Pain-point 진단', '개발지원비 운영', '사업화/홍보/유통 지원'] },
+  { no: 'STEP 3', title: '역량강화 프로그램', items: ['기업별 1:1 멘토링', '투자/IR 컨설팅', 'BM 고도화'] },
+  { no: 'STEP 4', title: '비즈니스 커넥팅 데이', items: ['투자상담회', 'VC/AC 네트워킹', '비즈매칭'] },
+  { no: 'STEP 5', title: '결과보고 및 후속관리', items: ['성과 데이터 관리', '보고서 제출', '만족도 및 후속성과 관리'] },
+];
+const OVERVIEW_INFO = [
+  ['운영기간', '2026.05 ~ 2026.12'],
+  ['주최', '부천시 콘텐츠관광과 콘텐츠육성팀'],
+  ['운영', '아자스쿨'],
+];
+const OVERVIEW_SUPPORT = ['콘텐츠 개발지원', '전문가 멘토링', '투자상담 및 네트워킹', '성과관리 및 후속 연계'];
+const OVERVIEW_PURPOSE = [
+  '콘텐츠 기업 성장 지원', '투자 및 사업화 역량 강화', '전문가 멘토링 연계',
+  '투자사·배급사·기관 네트워킹 지원', '지역 콘텐츠 산업 생태계 활성화',
+];
+
+const BusinessOverview = () => (
+  <div style={boS.wrap}>
+    <div style={boS.header}>
+      <div style={boS.eyebrow}>2026 부천 문화콘텐츠 성장지원 플랫폼</div>
+      <h2 style={boS.title}>사업 개요</h2>
+      <p style={boS.lead}>
+        부천시 콘텐츠 기업의 Scale-Up을 목표로 기업 진단 → 멘토링 → 투자 연계 → 성과관리까지
+        통합 지원하는 성장지원 플랫폼
+      </p>
+    </div>
+
+    <div style={boS.topGrid}>
+      <div style={boS.card}>
+        <div style={boS.cardLabel}>사업 개요</div>
+        <div style={boS.infoList}>
+          {OVERVIEW_INFO.map(([k, v]) => (
+            <div key={k} style={boS.infoRow}>
+              <span style={boS.infoKey}>{k}</span>
+              <span style={boS.infoVal}>{v}</span>
+            </div>
+          ))}
+          <div style={boS.infoRow}>
+            <span style={boS.infoKey}>주요 지원</span>
+            <span style={boS.chipWrap}>
+              {OVERVIEW_SUPPORT.map(s => <span key={s} style={boS.chip}>{s}</span>)}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div style={boS.card}>
+        <div style={boS.cardLabel}>사업 목적</div>
+        <ul style={boS.purposeList}>
+          {OVERVIEW_PURPOSE.map(p => (
+            <li key={p} style={boS.purposeItem}>
+              <span style={boS.purposeDot}></span>{p}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <div style={boS.processSection}>
+      <h3 style={boS.processTitle}>사업 프로세스</h3>
+      <div style={boS.timeline}>
+        {OVERVIEW_STEPS.map((s, i) => (
+          <div key={s.no} style={boS.step}>
+            <div style={boS.stepConnector}>
+              <span style={boS.stepDot}>{i + 1}</span>
+              <span style={boS.stepLine}></span>
+            </div>
+            <div style={boS.stepBody}>
+              <div style={boS.stepNo}>{s.no}</div>
+              <div style={boS.stepName}>{s.title}</div>
+              <ul style={boS.stepItems}>
+                {s.items.map(it => <li key={it} style={boS.stepItem}><span style={boS.stepItemDash}>·</span>{it}</li>)}
+              </ul>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+const boS = {
+  wrap: { display: 'flex', flexDirection: 'column', gap: '36px' },
+  header: { maxWidth: '760px' },
+  eyebrow: { fontSize: '12px', fontWeight: '600', letterSpacing: '0.6px', textTransform: 'uppercase', color: 'var(--color-ink-subtle)', marginBottom: '10px' },
+  title: { fontSize: '32px', fontWeight: 'var(--t-display-weight)', letterSpacing: 'var(--t-display-tracking)', color: 'var(--color-ink)', margin: 0 },
+  lead: { fontSize: '15px', lineHeight: 1.7, color: 'var(--color-ink-muted)', marginTop: '14px' },
+
+  topGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' },
+  card: { background: 'var(--color-surface-1)', border: 'var(--t-card-border)', borderRadius: 'var(--t-radius-card)', padding: '26px 28px', boxShadow: 'var(--t-card-shadow)' },
+  cardLabel: { fontSize: '13px', fontWeight: '600', color: 'var(--color-ink-subtle)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '18px' },
+  infoList: { display: 'flex', flexDirection: 'column', gap: '14px' },
+  infoRow: { display: 'flex', gap: '16px', alignItems: 'flex-start' },
+  infoKey: { fontSize: '13px', color: 'var(--color-ink-subtle)', minWidth: '72px', flexShrink: 0, paddingTop: '2px' },
+  infoVal: { fontSize: '14px', color: 'var(--color-ink)', fontWeight: '500' },
+  chipWrap: { display: 'flex', flexWrap: 'wrap', gap: '6px' },
+  chip: { fontSize: '12px', color: 'var(--color-ink)', background: 'var(--color-surface-2)', padding: '4px 11px', borderRadius: '999px' },
+  purposeList: { listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '13px', margin: 0, padding: 0 },
+  purposeItem: { display: 'flex', alignItems: 'center', gap: '12px', fontSize: '14px', color: 'var(--color-ink)' },
+  purposeDot: { width: '6px', height: '6px', borderRadius: '50%', background: 'var(--color-ink)', flexShrink: 0 },
+
+  processSection: {},
+  processTitle: { fontSize: '18px', fontWeight: '500', color: 'var(--color-ink)', margin: '0 0 24px' },
+  timeline: { display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '8px' },
+  step: { display: 'flex', flexDirection: 'column', gap: '14px' },
+  stepConnector: { display: 'flex', alignItems: 'center', height: '36px' },
+  stepDot: { width: '36px', height: '36px', borderRadius: '50%', background: 'var(--color-ink)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: '600', flexShrink: 0, zIndex: 1 },
+  stepLine: { flex: 1, height: '2px', background: 'var(--color-hairline)' },
+  stepBody: { background: 'var(--color-surface-1)', border: 'var(--t-card-border)', borderRadius: 'var(--t-radius-card)', padding: '18px 20px', boxShadow: 'var(--t-card-shadow)', flex: 1 },
+  stepNo: { fontSize: '11px', fontWeight: '600', letterSpacing: '0.6px', color: 'var(--color-ink-subtle)', marginBottom: '6px' },
+  stepName: { fontSize: '15px', fontWeight: '600', color: 'var(--color-ink)', marginBottom: '12px', letterSpacing: '-0.2px', lineHeight: 1.35 },
+  stepItems: { listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '7px', margin: 0, padding: 0 },
+  stepItem: { fontSize: '12.5px', color: 'var(--color-ink-muted)', lineHeight: 1.4, display: 'flex', gap: '6px' },
+  stepItemDash: { color: 'var(--color-ink-subtle)', flexShrink: 0 },
+};
+
 const PHOTO_GRADIENTS = [
   'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
   'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
@@ -139,9 +257,9 @@ const RejectModal = ({ mentorName, onReject, onClose }) => {
   return (
     <div style={adS.modalOverlay} onClick={onClose}>
       <div style={adS.modalCard} onClick={e => e.stopPropagation()} role="dialog" aria-modal="true">
-        <div style={adS.modalTitle}>멘토 신청 반려</div>
+        <div style={adS.modalTitle}>전문가(멘토) 신청 반려</div>
         <div style={adS.modalMessage}>
-          <strong>{mentorName}</strong> 님의 멘토 신청을 반려합니다.<br />
+          <strong>{mentorName}</strong> 님의 전문가 신청을 반려합니다.<br />
           사유는 신청자에게 안내됩니다.
         </div>
         <div style={{ marginTop: '16px' }}>
@@ -193,7 +311,9 @@ const AdminApp = ({ user, onLogout }) => {
 
   const navItems = [
     { id: 'dashboard', label: '대시보드' },
-    { id: 'mentors', label: '멘토 관리' },
+    { id: 'overview', label: '사업개요' },
+    { id: 'mentors', label: '전문가(멘토) 관리' },
+    { id: 'participants', label: '참여기업(멘티) 관리' },
     { id: 'reports', label: '보고서 확인' },
   ];
 
@@ -228,6 +348,9 @@ const AdminApp = ({ user, onLogout }) => {
         </div>
       </aside>
       <main style={adS.main}>
+        <div style={adS.bannerWrap}>
+          <img src="bucheon_banner.png" alt="2026 부천 문화콘텐츠 성장지원 플랫폼" style={adS.bannerImg} />
+        </div>
         {/* Page routing — sub-page beats tab */}
         {mentorDetailId && (
           <MentorDetailPage
@@ -246,7 +369,9 @@ const AdminApp = ({ user, onLogout }) => {
         {!mentorDetailId && !reportView && (
           <>
             {tab === 'dashboard' && <AdminDashboard db={db} refresh={refresh} onTab={goTab} onMentorClick={openMentor} />}
+            {tab === 'overview' && <div style={adS.content}><BusinessOverview /></div>}
             {tab === 'mentors' && <MentorManagement db={db} refresh={refresh} />}
+            {tab === 'participants' && <MenteeManagement db={db} onMentorClick={openMentor} />}
             {tab === 'reports' && <ReportsView db={db} onReportClick={openReport} />}
           </>
         )}
@@ -272,8 +397,8 @@ const AdminDashboard = ({ db, refresh, onTab, onMentorClick }) => {
       </div>
 
       <div style={adS.statsGrid}>
-        <StatCard label="승인된 멘토" value={`${approved.length}명`} sub={pending.length > 0 ? `대기 ${pending.length}명` : null} />
-        <StatCard label="배정된 멘티" value={`${db.mentees.length}개`} />
+        <StatCard label="승인된 전문가" value={`${approved.length}명`} sub={pending.length > 0 ? `대기 ${pending.length}명` : null} />
+        <StatCard label="배정된 참여기업" value={`${db.mentees.length}개`} />
         <StatCard label="전체 일정" value={`${db.schedules.length}건`} sub={`완료 ${completed.length}건 · 예정 ${db.schedules.length - completed.length}건`} />
         <StatCard
           primary
@@ -292,8 +417,8 @@ const AdminDashboard = ({ db, refresh, onTab, onMentorClick }) => {
               <div style={{ ...adS.alertItem, cursor: 'pointer' }} onClick={() => onTab('mentors')}>
                 <div style={adS.alertDot('var(--color-status-warn)')}></div>
                 <div style={{ flex: 1 }}>
-                  <div style={adS.alertMain}>승인 대기 중인 멘토 <strong>{pending.length}명</strong></div>
-                  <div style={adS.alertSub}>{pending.map(p => p.name).join(', ')} · 멘토 관리에서 승인하세요</div>
+                  <div style={adS.alertMain}>승인 대기 중인 전문가 <strong>{pending.length}명</strong></div>
+                  <div style={adS.alertSub}>{pending.map(p => p.name).join(', ')} · 전문가 관리에서 승인하세요</div>
                 </div>
                 <Icon name="arrow-right" size={16} color="var(--color-ink-muted)" />
               </div>
@@ -302,8 +427,8 @@ const AdminDashboard = ({ db, refresh, onTab, onMentorClick }) => {
               <div key={m.id} style={adS.alertItem}>
                 <div style={adS.alertDot('var(--color-semantic-error)')}></div>
                 <div style={{ flex: 1 }}>
-                  <div style={adS.alertMain}><strong>{m.name}</strong> · 일정 미등록</div>
-                  <div style={adS.alertSub}>{m.company} · 멘티 {db.mentees.filter(mt => mt.mentorId === m.id).length}개 업체 배정됨</div>
+                  <div style={adS.alertMain}><strong>{m.company}</strong> · 일정 미등록</div>
+                  <div style={adS.alertSub}>{m.name} {m.position} · 참여기업 {db.mentees.filter(mt => mt.mentorId === m.id).length}개 배정됨</div>
                 </div>
               </div>
             ))}
@@ -312,7 +437,7 @@ const AdminDashboard = ({ db, refresh, onTab, onMentorClick }) => {
       )}
 
       <div style={adS.section}>
-        <h3 style={adS.sectionTitle}>멘토별 진행 현황 <span style={adS.sectionHint}>행을 클릭하면 상세 페이지로 이동</span></h3>
+        <h3 style={adS.sectionTitle}>전문가별 진행 현황 <span style={adS.sectionHint}>행을 클릭하면 상세 페이지로 이동</span></h3>
         <div style={adS.progressList}>
           {approved.map(m => {
             const scheds = db.schedules.filter(s => s.mentorId === m.id);
@@ -325,8 +450,8 @@ const AdminDashboard = ({ db, refresh, onTab, onMentorClick }) => {
                 onClick={() => onMentorClick(m.id)}>
                 <div style={adS.progressLeft}>
                   <div>
-                    <div style={adS.progressName}>{m.name}</div>
-                    <div style={adS.progressMeta}>{m.company} · 멘티 {menteeCount}개 업체</div>
+                    <div style={adS.progressName}>{m.company}</div>
+                    <div style={adS.progressMeta}>{m.name} {m.position} · 참여기업 {menteeCount}개</div>
                   </div>
                 </div>
                 <div style={adS.progressRight}>
@@ -375,14 +500,14 @@ const MentorDetailPage = ({ mentor, db, onBack }) => {
       <div style={adS.detailHero}>
         <div style={adS.detailHeroLeft}>
           <div>
-            <h2 style={adS.pageTitle}>{mentor.name} <span style={adS.detailHeroPos}>{mentor.position}</span></h2>
-            <div style={adS.detailHeroMeta}>{mentor.company} · {mentor.phone}</div>
+            <h2 style={adS.pageTitle}>{mentor.company}</h2>
+            <div style={adS.detailHeroMeta}>{mentor.name} {mentor.position} · {mentor.phone}</div>
           </div>
         </div>
       </div>
 
       <div style={adS.statsGrid}>
-        <StatCard label="배정 멘티" value={`${mentees.length}개`} />
+        <StatCard label="배정 참여기업" value={`${mentees.length}개`} />
         <StatCard label="전체 일정" value={`${total}건`} />
         <StatCard label="완료" value={`${done}건`} accent="var(--color-semantic-success)" />
         <StatCard label="진행률" value={`${pct}%`} sub={`${done} / ${total}건`} accent={pct === 100 ? 'var(--color-semantic-success)' : 'var(--color-report-blue)'} />
@@ -399,8 +524,8 @@ const MentorDetailPage = ({ mentor, db, onBack }) => {
       {lightbox && <Lightbox photos={lightbox.photos} index={lightbox.index} onClose={() => setLightbox(null)} />}
 
       <div style={adS.section}>
-        <h3 style={adS.sectionTitle}>멘티별 진행 현황</h3>
-        {mentees.length === 0 && <div style={adS.emptyState}>배정된 멘티가 없습니다.</div>}
+        <h3 style={adS.sectionTitle}>참여기업별 진행 현황</h3>
+        {mentees.length === 0 && <div style={adS.emptyState}>배정된 참여기업이 없습니다.</div>}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {mentees.map(mt => {
             const mtScheds = db.schedules.filter(s => s.menteeId === mt.id).sort((a, b) => a.date.localeCompare(b.date));
@@ -411,7 +536,7 @@ const MentorDetailPage = ({ mentor, db, onBack }) => {
                   <div>
                     <div style={adS.detailMenteeName}>{mt.name}</div>
                     <div style={adS.detailMenteeContact}>
-                      {mt.contactName && <span>담당: {mt.contactName}</span>}
+                      {mt.contactName && <span>담당: {mt.contactName}{mt.contactPosition ? ` ${mt.contactPosition}` : ''}</span>}
                       {mt.contactPhone && <span> · {mt.contactPhone}</span>}
                     </div>
                   </div>
@@ -451,7 +576,7 @@ const MentorDetailPage = ({ mentor, db, onBack }) => {
 const MentorManagement = ({ db, refresh }) => {
   const [expanded, setExpanded] = React.useState(null);
   const [addingFor, setAddingFor] = React.useState(null);
-  const [newForm, setNewForm] = React.useState({ name: '', contactName: '', contactPhone: '' });
+  const [newForm, setNewForm] = React.useState({ name: '', contactName: '', contactPosition: '', contactPhone: '' });
   const [subTab, setSubTab] = React.useState('all');
   const [rejectingMentor, setRejectingMentor] = React.useState(null); // {id, name}
   const [removingMentee, setRemovingMentee] = React.useState(null);   // {id, name}
@@ -473,8 +598,8 @@ const MentorManagement = ({ db, refresh }) => {
   };
   const handleAddMentee = (mentorId) => {
     if (!newForm.name.trim()) return;
-    window.DB.addMentee(mentorId, newForm.name.trim(), newForm.contactName.trim(), newForm.contactPhone.trim());
-    setNewForm({ name: '', contactName: '', contactPhone: '' });
+    window.DB.addMentee(mentorId, newForm.name.trim(), newForm.contactName.trim(), newForm.contactPhone.trim(), newForm.contactPosition.trim());
+    setNewForm({ name: '', contactName: '', contactPosition: '', contactPhone: '' });
     setAddingFor(null); refresh();
   };
   const handleRemoveMenteeConfirm = () => {
@@ -485,32 +610,34 @@ const MentorManagement = ({ db, refresh }) => {
 
   return (
     <div style={adS.content}>
-      <div style={adS.pageHeader}><h2 style={adS.pageTitle}>멘토 관리</h2></div>
+      <div style={adS.pageHeader}><h2 style={adS.pageTitle}>전문가(멘토) 관리</h2></div>
       <div style={adS.subTabRow}>
-        {[['all', `전체 멘토 (${approved.length})`], ['pending', `승인 대기 (${pending.length})`]].map(([id, label]) => (
+        {[['all', `전체 전문가 (${approved.length})`], ['pending', `승인 대기 (${pending.length})`]].map(([id, label]) => (
           <button key={id} onClick={() => setSubTab(id)}
             style={{ ...adS.subTab, ...(subTab === id ? adS.subTabActive : {}) }}>{label}</button>
         ))}
       </div>
       <div style={adS.mentorList}>
-        {list.length === 0 && <div style={adS.emptyState}>{subTab === 'pending' ? '승인 대기 중인 멘토가 없습니다.' : '등록된 멘토가 없습니다.'}</div>}
+        {list.length === 0 && <div style={adS.emptyState}>{subTab === 'pending' ? '승인 대기 중인 전문가가 없습니다.' : '등록된 전문가가 없습니다.'}</div>}
         {list.map(m => {
           const mentees = db.mentees.filter(mt => mt.mentorId === m.id);
           const scheds = db.schedules.filter(s => s.mentorId === m.id);
+          const schedDone = scheds.filter(s => s.status === 'completed').length;
+          const schedPct = scheds.length ? Math.round(schedDone / scheds.length * 100) : 0;
           const isOpen = expanded === m.id;
           return (
             <div key={m.id} style={adS.mentorCard}>
               <div style={adS.mentorHeader} onClick={() => m.approved && setExpanded(isOpen ? null : m.id)}>
                 <div style={adS.mentorLeft}>
                   <div>
-                    <div style={adS.mentorName}>{m.name} <span style={adS.mentorPos}>{m.position}</span></div>
-                    <div style={adS.mentorMeta}>{m.company} · {m.phone}</div>
+                    <div style={adS.mentorName}>{m.company}</div>
+                    <div style={adS.mentorMeta}>{m.name} {m.position} · {m.phone}</div>
                   </div>
                 </div>
                 <div style={adS.mentorRight}>
                   {m.approved
                     ? <><span style={adS.badge('green')}>승인됨</span>
-                        <span style={adS.metaChip}>멘티 {mentees.length}개 업체</span>
+                        <span style={adS.metaChip}>참여기업 {mentees.length}개</span>
                         <span style={adS.metaChip}>일정 {scheds.length}건</span>
                         <Icon name={isOpen ? 'chevron-up' : 'chevron-down'} size={16} color="var(--color-ink-muted)" /></>
                     : <><span style={adS.badge('orange')}>대기중</span>
@@ -520,10 +647,20 @@ const MentorManagement = ({ db, refresh }) => {
                 </div>
               </div>
 
+              {m.approved && (
+                <div style={adS.mentorProgressStrip}>
+                  <span style={adS.mentorProgressCaption}>진척률</span>
+                  <div style={adS.mentorProgressBarWrap}>
+                    <div style={{ ...adS.mentorProgressBarFill, width: schedPct + '%', background: scheds.length === 0 ? 'var(--color-hairline)' : schedPct === 100 ? 'var(--color-semantic-success)' : 'var(--color-report-blue)' }}></div>
+                  </div>
+                  <span style={adS.mentorProgressLabel}>{schedDone}/{scheds.length}건 <span style={{ color: 'var(--color-ink-subtle)' }}>({schedPct}%)</span></span>
+                </div>
+              )}
+
               {isOpen && m.approved && (
                 <div style={adS.menteeSection}>
-                  <div style={adS.menteeSectionTitle}>배정된 멘티 ({mentees.length}/10)</div>
-                  {mentees.length === 0 && <div style={adS.emptyMentee}>배정된 멘티가 없습니다.</div>}
+                  <div style={adS.menteeSectionTitle}>배정된 참여기업 ({mentees.length}/10)</div>
+                  {mentees.length === 0 && <div style={adS.emptyMentee}>배정된 참여기업이 없습니다.</div>}
                   {mentees.map(mt => {
                     const mScheds = db.schedules.filter(s => s.menteeId === mt.id);
                     const mDone = mScheds.filter(s => s.status === 'completed').length;
@@ -532,7 +669,7 @@ const MentorManagement = ({ db, refresh }) => {
                         <div style={{ flex: 1 }}>
                           <div style={adS.menteeName}>{mt.name}</div>
                           <div style={adS.menteeContact}>
-                            {mt.contactName && <span>{mt.contactName}</span>}
+                            {mt.contactName && <span>{mt.contactName}{mt.contactPosition ? ` ${mt.contactPosition}` : ''}</span>}
                             {mt.contactPhone && <span> · {mt.contactPhone}</span>}
                           </div>
                         </div>
@@ -554,6 +691,10 @@ const MentorManagement = ({ db, refresh }) => {
                               <label style={adS.addLabel}>담당자명</label>
                               <input value={newForm.contactName} onChange={setF('contactName')} placeholder="홍길동" style={adS.addInput} />
                             </div>
+                            <div style={{ ...adS.addField, flex: '0 0 110px' }}>
+                              <label style={adS.addLabel}>직급</label>
+                              <input value={newForm.contactPosition} onChange={setF('contactPosition')} placeholder="대표" style={adS.addInput} />
+                            </div>
                             <div style={adS.addField}>
                               <label style={adS.addLabel}>전화번호</label>
                               <input value={newForm.contactPhone} onChange={setF('contactPhone')} placeholder="010-0000-0000" style={adS.addInput} />
@@ -564,7 +705,7 @@ const MentorManagement = ({ db, refresh }) => {
                             <button style={adS.addCancelBtn} onClick={() => { setAddingFor(null); setNewForm({ name: '', contactName: '', contactPhone: '' }); }}>취소</button>
                           </div>
                         </div>
-                      : <button style={adS.addMenteeBtn} onClick={() => setAddingFor(m.id)}>+ 멘티 추가</button>
+                      : <button style={adS.addMenteeBtn} onClick={() => setAddingFor(m.id)}>+ 참여기업 추가</button>
                   )}
                 </div>
               )}
@@ -582,8 +723,8 @@ const MentorManagement = ({ db, refresh }) => {
       )}
       {removingMentee && (
         <ConfirmModal
-          title="멘티 업체 삭제"
-          message={<><strong>{removingMentee.name}</strong> 을(를) 삭제합니다.<br />이 멘티에 등록된 일정도 함께 삭제되며, 되돌릴 수 없습니다.</>}
+          title="참여기업 삭제"
+          message={<><strong>{removingMentee.name}</strong> 을(를) 삭제합니다.<br />이 참여기업에 등록된 일정도 함께 삭제되며, 되돌릴 수 없습니다.</>}
           confirmText="삭제"
           destructive
           onConfirm={handleRemoveMenteeConfirm}
@@ -611,7 +752,7 @@ const ReportsView = ({ db, onReportClick }) => {
       <div style={adS.pageHeader}>
         <h2 style={adS.pageTitle}>보고서 확인</h2>
         <select value={filterMentor} onChange={e => setFilterMentor(e.target.value)} style={adS.filterSelect}>
-          <option value="all">전체 멘토</option>
+          <option value="all">전체 전문가</option>
           {approvedMentors.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
         </select>
       </div>
@@ -626,9 +767,9 @@ const ReportsView = ({ db, onReportClick }) => {
             {/* 멘토 = 카드 밖 섹션 헤더 (그룹 구분자) */}
             <div style={adS.reportMentorSectionHeader}>
               <div style={adS.reportMentorSectionLeft}>
-                <span style={adS.reportMentorSectionIndex}>멘토 {String(mentorIdx + 1).padStart(2, '0')}</span>
-                <span style={adS.reportMentorSectionName}>{mentor.name}</span>
-                <span style={adS.reportMentorSectionCompany}>{mentor.company}</span>
+                <span style={adS.reportMentorSectionIndex}>전문가 {String(mentorIdx + 1).padStart(2, '0')}</span>
+                <span style={adS.reportMentorSectionName}>{mentor.company}</span>
+                <span style={adS.reportMentorSectionCompany}>{mentor.name} {mentor.position}</span>
               </div>
               <span style={adS.reportMentorSectionCount}>{mentorCompleted.length}건 완료</span>
             </div>
@@ -649,7 +790,7 @@ const ReportsView = ({ db, onReportClick }) => {
                         <div style={adS.reportMenteeName}>{mt.name}</div>
                         {mt.contactName && (
                           <div style={adS.reportMenteeContact}>
-                            담당 {mt.contactName} · {mt.contactPhone}
+                            담당 {mt.contactName}{mt.contactPosition ? ` ${mt.contactPosition}` : ''} · {mt.contactPhone}
                           </div>
                         )}
                       </div>
@@ -715,7 +856,7 @@ const ReportDetailPage = ({ view, db, onBack }) => {
           <div style={adS.detailHeroMeta}>
             <span>{s.date.replace(/-/g, '. ')}</span>
             <span style={{ margin: '0 8px', color: 'var(--color-ink-tertiary)' }}>·</span>
-            <span>{mentor.name}</span>
+            <span>{mentor.company}</span>
             <Icon name="arrow-right" size={12} color="var(--color-ink-tertiary)" style={{ margin: '0 6px' }} />
             <span>{mentee.name}</span>
           </div>
@@ -728,14 +869,14 @@ const ReportDetailPage = ({ view, db, onBack }) => {
           <div style={adS.reportFieldValue}>{s.date.replace(/-/g, '. ')}</div>
         </div>
         <div style={adS.reportDetailCard}>
-          <div style={adS.reportFieldLabel}>멘토</div>
-          <div style={adS.reportFieldValue}>{mentor.name}</div>
-          <div style={adS.reportFieldSub}>{mentor.company}</div>
+          <div style={adS.reportFieldLabel}>전문가</div>
+          <div style={adS.reportFieldValue}>{mentor.company}</div>
+          <div style={adS.reportFieldSub}>{mentor.name} {mentor.position}</div>
         </div>
         <div style={adS.reportDetailCard}>
-          <div style={adS.reportFieldLabel}>멘티</div>
+          <div style={adS.reportFieldLabel}>참여기업</div>
           <div style={adS.reportFieldValue}>{mentee.name}</div>
-          {mentee.contactName && <div style={adS.reportFieldSub}>{mentee.contactName} · {mentee.contactPhone}</div>}
+          {mentee.contactName && <div style={adS.reportFieldSub}>{mentee.contactName}{mentee.contactPosition ? ` ${mentee.contactPosition}` : ''} · {mentee.contactPhone}</div>}
         </div>
       </div>
 
@@ -766,6 +907,68 @@ const ReportDetailPage = ({ view, db, onBack }) => {
   );
 };
 
+/* ── 참여기업(멘티) 관리 Tab ── */
+const MenteeManagement = ({ db, onMentorClick }) => {
+  const [filterMentor, setFilterMentor] = React.useState('all');
+  const mentors = db.users.filter(u => u.role === 'mentor' && u.approved);
+  const mentorById = (id) => db.users.find(u => u.id === id);
+  const list = filterMentor === 'all' ? db.mentees : db.mentees.filter(m => m.mentorId === filterMentor);
+
+  return (
+    <div style={adS.content}>
+      <div style={adS.pageHeader}>
+        <h2 style={adS.pageTitle}>참여기업(멘티) 관리</h2>
+        <select value={filterMentor} onChange={e => setFilterMentor(e.target.value)} style={adS.filterSelect}>
+          <option value="all">전체 전문가</option>
+          {mentors.map(m => <option key={m.id} value={m.id}>{m.company}</option>)}
+        </select>
+      </div>
+      <div style={adS.reportSummary}>전체 참여기업 <strong>{list.length}개</strong></div>
+
+      <div style={adS.mentorList}>
+        {list.length === 0 && <div style={adS.emptyState}>등록된 참여기업이 없습니다.</div>}
+        {list.map(mt => {
+          const scheds = db.schedules.filter(s => s.menteeId === mt.id);
+          const done = scheds.filter(s => s.status === 'completed').length;
+          const pct = scheds.length ? Math.round(done / scheds.length * 100) : 0;
+          const mentor = mentorById(mt.mentorId);
+          return (
+            <div key={mt.id} style={adS.mentorCard}>
+              <div style={{ ...adS.mentorHeader, cursor: 'default' }}>
+                <div style={adS.mentorLeft}>
+                  <div>
+                    <div style={adS.mentorName}>{mt.name}</div>
+                    <div style={adS.mentorMeta}>
+                      {mt.contactName ? `담당 ${mt.contactName}${mt.contactPosition ? ` ${mt.contactPosition}` : ''}` : '담당자 미등록'}
+                      {mt.contactPhone ? ` · ${mt.contactPhone}` : ''}
+                    </div>
+                  </div>
+                </div>
+                <div style={adS.mentorRight}>
+                  {mentor
+                    ? <button style={adS.menteeMentorChip} onClick={() => onMentorClick(mentor.id)}>
+                        담당 전문가 · {mentor.company}
+                        <Icon name="chevron-right" size={14} color="var(--color-ink-muted)" style={{ marginLeft: '4px' }} />
+                      </button>
+                    : <span style={adS.badge('orange')}>전문가 미배정</span>}
+                  <span style={adS.metaChip}>일정 {scheds.length}건</span>
+                </div>
+              </div>
+              <div style={adS.mentorProgressStrip}>
+                <span style={adS.mentorProgressCaption}>진척률</span>
+                <div style={adS.mentorProgressBarWrap}>
+                  <div style={{ ...adS.mentorProgressBarFill, width: pct + '%', background: scheds.length === 0 ? 'var(--color-hairline)' : pct === 100 ? 'var(--color-semantic-success)' : 'var(--color-report-blue)' }}></div>
+                </div>
+                <span style={adS.mentorProgressLabel}>{done}/{scheds.length}건 <span style={{ color: 'var(--color-ink-subtle)' }}>({pct}%)</span></span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
 /* ── Styles ── */
 const adS = {
   layout: { display: 'flex', minHeight: '100vh', background: 'var(--color-canvas)' },
@@ -788,7 +991,9 @@ const adS = {
   userSub: { fontSize: '12px', color: 'var(--color-ink-subtle)' },
   logoutBtn: { width: '100%', padding: '10px', background: 'transparent', border: '1px solid var(--color-hairline)', borderRadius: '8px', fontSize: '14px', color: 'var(--color-ink-muted)', cursor: 'pointer', fontFamily: 'var(--font-sans)' },
   main: { flex: 1, overflow: 'auto' },
-  content: { padding: '48px 56px', maxWidth: '1360px', margin: '0 auto' },
+  bannerWrap: { maxWidth: '1360px', margin: '0 auto', padding: '32px 56px 0' },
+  bannerImg: { display: 'block', width: '100%', height: 'auto', borderRadius: '16px', boxShadow: 'var(--t-card-shadow)' },
+  content: { padding: '32px 56px 48px', maxWidth: '1360px', margin: '0 auto' },
   backBtn: { background: 'transparent', border: 'none', color: 'var(--color-ink-muted)', fontSize: '14px', cursor: 'pointer', padding: '0 0 24px', fontFamily: 'var(--font-sans)' },
   pageHeader: { display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '36px', gap: '24px' },
   pageTitle: { fontSize: '32px', fontWeight: 'var(--t-display-weight)', color: 'var(--color-ink)', margin: '0', letterSpacing: 'var(--t-display-tracking)' },
@@ -840,6 +1045,12 @@ const adS = {
   mentorPos: { fontSize: '13px', fontWeight: '400', color: 'var(--color-ink-muted)' },
   mentorMeta: { fontSize: '13px', color: 'var(--color-ink-subtle)' },
   mentorRight: { display: 'flex', alignItems: 'center', gap: '10px' },
+  mentorProgressStrip: { display: 'flex', alignItems: 'center', gap: '14px', padding: '14px 24px', borderTop: '1px solid var(--color-hairline-soft)', background: 'var(--color-canvas)' },
+  mentorProgressCaption: { fontSize: '12px', color: 'var(--color-ink-subtle)', minWidth: '44px', flexShrink: 0 },
+  mentorProgressBarWrap: { flex: 1, height: '8px', background: 'var(--color-surface-2)', borderRadius: '999px', overflow: 'hidden' },
+  mentorProgressBarFill: { height: '100%', borderRadius: '999px', transition: 'width 0.4s', minWidth: '2px' },
+  mentorProgressLabel: { fontSize: '13px', color: 'var(--color-ink)', minWidth: '110px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' },
+  menteeMentorChip: { display: 'inline-flex', alignItems: 'center', fontSize: '13px', color: 'var(--color-ink)', background: 'var(--color-surface-2)', border: '1px solid var(--color-hairline)', padding: '5px 12px', borderRadius: '999px', cursor: 'pointer', fontFamily: 'var(--font-sans)' },
   badge: color => ({ fontSize: '12px', fontWeight: '500', padding: '4px 10px', borderRadius: '999px', background: color === 'green' ? 'var(--color-status-done-bg)' : 'var(--color-status-warn-bg)', color: color === 'green' ? 'var(--color-semantic-success)' : 'var(--color-status-warn-ink)' }),
   metaChip: { fontSize: '13px', color: 'var(--color-ink-subtle)', background: 'var(--color-canvas)', padding: '4px 10px', borderRadius: '999px' },
   approveBtn: { padding: '7px 16px', background: 'var(--t-button-bg)', color: 'var(--t-button-text)', border: 'none', borderRadius: 'var(--t-radius-button)', fontSize: '13px', fontWeight: '600', cursor: 'pointer', fontFamily: 'var(--font-sans)' },
@@ -979,4 +1190,4 @@ const adS = {
   modalDestructiveBtn: { padding: '9px 18px', background: 'var(--color-semantic-error)', color: '#fff', border: 'none', borderRadius: 'var(--t-radius-button)', fontSize: '14px', fontWeight: '600', cursor: 'pointer', fontFamily: 'var(--font-sans)' },
 };
 
-Object.assign(window, { AdminApp, stockPhoto, Lightbox, DownloadModal, PhotoTile, ConfirmModal, RejectModal });
+Object.assign(window, { AdminApp, stockPhoto, Lightbox, DownloadModal, PhotoTile, ConfirmModal, RejectModal, BusinessOverview });

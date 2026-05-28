@@ -1,5 +1,5 @@
 (function () {
-  var KEY = 'bucheon_mentoring_v2'; /* v2: mentees have contactName + contactPhone */
+  var KEY = 'bucheon_mentoring_v3'; /* v3: mentees have contactPosition (담당자 직급) */
 
   var SEED = {
     users: [
@@ -10,13 +10,13 @@
       { id: 'm4', email: 'mentor4@test.com', password: 'mentor123', name: '최지현', company: '(주)스마트솔루션', phone: '010-4444-5555', position: '사원', role: 'mentor', approved: false },
     ],
     mentees: [
-      { id: 'te1', name: '(주)알파테크', contactName: '이민준', contactPhone: '010-5111-1001', mentorId: 'm1' },
-      { id: 'te2', name: '(주)베타이노베이션', contactName: '박서연', contactPhone: '010-5222-2002', mentorId: 'm1' },
-      { id: 'te3', name: '(주)감마스타트업', contactName: '김도현', contactPhone: '010-5333-3003', mentorId: 'm1' },
-      { id: 'te4', name: '(주)델타컴퍼니', contactName: '최유진', contactPhone: '010-5444-4004', mentorId: 'm2' },
-      { id: 'te5', name: '(주)엡실론벤처', contactName: '정하늘', contactPhone: '010-5555-5005', mentorId: 'm2' },
-      { id: 'te6', name: '(주)제타기업', contactName: '윤지호', contactPhone: '010-5666-6006', mentorId: 'm3' },
-      { id: 'te7', name: '(주)에타산업', contactName: '강수아', contactPhone: '010-5777-7007', mentorId: 'm3' },
+      { id: 'te1', name: '(주)알파테크', contactName: '이민준', contactPosition: '대표', contactPhone: '010-5111-1001', mentorId: 'm1' },
+      { id: 'te2', name: '(주)베타이노베이션', contactName: '박서연', contactPosition: '이사', contactPhone: '010-5222-2002', mentorId: 'm1' },
+      { id: 'te3', name: '(주)감마스타트업', contactName: '김도현', contactPosition: '팀장', contactPhone: '010-5333-3003', mentorId: 'm1' },
+      { id: 'te4', name: '(주)델타컴퍼니', contactName: '최유진', contactPosition: '대표', contactPhone: '010-5444-4004', mentorId: 'm2' },
+      { id: 'te5', name: '(주)엡실론벤처', contactName: '정하늘', contactPosition: '실장', contactPhone: '010-5555-5005', mentorId: 'm2' },
+      { id: 'te6', name: '(주)제타기업', contactName: '윤지호', contactPosition: '대표', contactPhone: '010-5666-6006', mentorId: 'm3' },
+      { id: 'te7', name: '(주)에타산업', contactName: '강수아', contactPosition: '과장', contactPhone: '010-5777-7007', mentorId: 'm3' },
     ],
     schedules: [
       { id: 's1', mentorId: 'm1', menteeId: 'te1', date: '2026-04-10', status: 'completed', reportFilename: '멘토링보고서_4월_알파테크.pdf', photos: ['현장사진1.jpg', '현장사진2.jpg'] },
@@ -70,10 +70,10 @@
       var db = this.get();
       return mentorId ? db.mentees.filter(function (m) { return m.mentorId === mentorId; }) : db.mentees;
     },
-    addMentee: function (mentorId, name, contactName, contactPhone) {
+    addMentee: function (mentorId, name, contactName, contactPhone, contactPosition) {
       var db = this.get();
       if (db.mentees.filter(function (m) { return m.mentorId === mentorId; }).length >= 10) return null;
-      var m = { id: 'te_' + Date.now(), name: name, contactName: contactName || '', contactPhone: contactPhone || '', mentorId: mentorId };
+      var m = { id: 'te_' + Date.now(), name: name, contactName: contactName || '', contactPosition: contactPosition || '', contactPhone: contactPhone || '', mentorId: mentorId };
       db.mentees.push(m);
       this.save(db);
       return m;
